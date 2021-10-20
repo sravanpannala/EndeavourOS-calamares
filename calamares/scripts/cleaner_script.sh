@@ -71,7 +71,7 @@ _copy_files(){
     if [ -x $target/usr/bin/lightdm ] ; then        
         echo "====> Copying DM config file $config_file to target"
 
-        config_file=/etc/lightdm/lightdm-slick-greeter.conf
+        config_file=/etc/lightdm/slick-greeter.conf
         rsync -vaRI $config_file $target
     fi
 
