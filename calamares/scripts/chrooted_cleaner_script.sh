@@ -154,8 +154,8 @@ _clean_offline_packages(){
     gparted
     grsync
     calamares_current
-    calamares_config_next_default
-    calamares_config_next_ce
+    calamares_config_default
+    calamares_config_ce
     edk2-shell
     boost-libs
     doxygen
