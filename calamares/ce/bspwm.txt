@@ -29,8 +29,7 @@ gvfs-smb
 xfce4-terminal
 xclip
 lightdm
-lightdm-gtk-greeter
-lightdm-gtk-greeter-settings
+lightdm-slick-greeter
 acpi
 sysstat
 nitrogen
