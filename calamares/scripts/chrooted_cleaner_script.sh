@@ -138,6 +138,7 @@ _clean_archiso(){
         /root/.config/{qt5ct,Kvantum,dconf}
         /etc/motd
         /{gpg.conf,gpg-agent.conf,pubring.gpg,secring.gpg}
+        /version
     )
 
     local xx
@@ -403,7 +404,7 @@ _clean_up(){
     if [ -r /usr/share/xsessions/xfce.desktop ] && [ -r /usr/share/xsessions/i3.desktop ] ; then
         _remove_pkgs_if_installed dex
     fi
-    
+
     # run possible user-given commands
     _RunUserCommands
 }
