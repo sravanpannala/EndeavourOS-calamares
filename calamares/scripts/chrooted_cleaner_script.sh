@@ -479,6 +479,7 @@ _change_config_options(){
     #set lightdm.conf to logind-check-graphical=true
     sed -i 's?#logind-check-graphical=false?logind-check-graphical=true?' /etc/lightdm/lightdm.conf
     sed -i 's?#greeter-session=example-gtk-gnome?greeter-session=lightdm-slick-greeter?' /etc/lightdm/lightdm.conf
+    sed -i 's?#allow-user-switching=true?allow-user-switching=true?' /etc/lightdm/lightdm.conf
 }
 
 _remove_gnome_software(){
