@@ -483,6 +483,7 @@ _remove_discover(){
 }
 
 _run_hotfix_end() {
+    _check_internet_connection || return
     local file=hotfix-end.bash
     local url=$(eos-github2gitlab https://raw.githubusercontent.com/endeavouros-team/ISO-hotfixes/main/$file)
     wget --timeout=60 -q -O /tmp/$file $url && {
