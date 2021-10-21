@@ -412,6 +412,11 @@ _desktop_i3(){
     # i3 configs here
     # Note: variable 'desktop' from '_another_case' is visible here too!
 
+    if ! _check_internet_connection ; then
+        echo "==> Cannot fetch i3 configs, no connection."
+        return
+    fi
+
     git clone $(eos-github2gitlab https://github.com/endeavouros-team/endeavouros-i3wm-setup.git)
     pushd endeavouros-i3wm-setup >/dev/null
     cp -R .config ~/
@@ -484,7 +489,7 @@ _remove_discover(){
 
 _run_hotfix_end() {
     if ! _check_internet_connection ; then
-        echo "Cannot fetch hotfix-end.bash, no connection."
+        echo "==> Cannot fetch hotfix-end.bash, no connection."
         return
     fi
     local file=hotfix-end.bash
