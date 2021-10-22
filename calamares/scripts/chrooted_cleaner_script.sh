@@ -316,6 +316,17 @@ _remove_broadcom_wifi_driver() {
     }
 }
 
+_remove_or_blacklist_r8168() {
+    local xx
+    if [ -n "$(lsmod | grep -Pw 'r8168|r8169')" ] || [ -n "$(lspci | grep -w Ethernet | grep -w 8168)" ] ; then
+        # keep r8168 package but blacklist it; r8169 will be used by default
+        xx=/usr/lib/modprobe.d/r8168.conf
+        test -r $xx && sed -i $xx -e 's|r8169|r8168|'
+    else
+        _remove_pkgs_if_installed r8168
+    fi
+}
+
 _manage_nvidia_packages() {
     local file=/tmp/nvidia-info.bash        # nvidia info from livesession
     local nvidia_card=""                    # these two variables are defined in $file
@@ -396,9 +407,7 @@ _clean_up(){
     # remove broadcom-wl-dkms if it is not needed
     _remove_broadcom_wifi_driver
 
-    # keep r8168 package but blacklist it; r8169 will be used by default
-    xx=/usr/lib/modprobe.d/r8168.conf
-    test -r $xx && sed -i $xx -e 's|r8169|r8168|'
+    _remove_or_blacklist_r8168
 
     # if both Xfce and i3 are installed, remove dex package
     if [ -r /usr/share/xsessions/xfce.desktop ] && [ -r /usr/share/xsessions/i3.desktop ] ; then
