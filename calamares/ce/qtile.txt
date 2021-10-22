@@ -6,7 +6,7 @@ archlinux-xdg-menu
 arc-x-icons-theme
 capitaine-cursors
 dex
-eos-skel-ce-openbox
+eos-skel-ce-qtile
 feh
 gtk-engine-murrine
 gvfs
