@@ -384,6 +384,15 @@ _RunUserCommands() {
     fi
 }
 
+_misc_cleanups() {
+    # /etc/resolv.conf.pacnew may be unnecessary, so delete it
+
+    local file=/etc/resolv.conf.pacnew
+    if [ -z "$(grep -Pv "^[ ]*#" $file 2>/dev/null)" ] ; then
+        rm -f $file                                            # pacnew contains only comments
+    fi
+}
+
 _clean_up(){
     local xx
 
@@ -408,6 +417,8 @@ _clean_up(){
     _remove_broadcom_wifi_driver
 
     _remove_or_blacklist_r8168
+
+    _misc_cleanups
 
     # if both Xfce and i3 are installed, remove dex package
     if [ -r /usr/share/xsessions/xfce.desktop ] && [ -r /usr/share/xsessions/i3.desktop ] ; then
