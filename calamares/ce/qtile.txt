@@ -2,8 +2,8 @@ acpi
 alsa-utils
 arandr
 arc-gtk-theme-eos
-archlinux-xdg-menu
 arc-x-icons-theme
+archlinux-xdg-menu
 capitaine-cursors
 dex
 eos-skel-ce-qtile
