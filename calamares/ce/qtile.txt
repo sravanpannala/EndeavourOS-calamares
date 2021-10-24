@@ -1,5 +1,4 @@
 acpi
-alsa-utils
 arandr
 arc-gtk-theme-eos
 arc-x-icons-theme
@@ -22,16 +21,16 @@ lightdm-slick-greeter
 lxappearance-gtk3
 network-manager-applet
 papirus-icon-theme
-paprefs
 pasystray
-pavucontrol
-pcmanfm-gtk3
 picom
 polkit-gnome
-pulseaudio
 qtile
 rofi
 sysstat
+thunar
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-volman
 ttf-cascadia-code
 ttf-nerd-fonts-symbols
 tumbler
