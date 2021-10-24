@@ -24,11 +24,8 @@ jq
 lightdm
 lightdm-slick-greeter
 lxappearance-gtk3
-meld
 network-manager-applet
 nitrogen
-paprefs
-pavucontrol
 picom
 polkit-gnome
 polybar
