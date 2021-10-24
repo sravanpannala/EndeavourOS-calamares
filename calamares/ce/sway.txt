@@ -25,10 +25,7 @@ mako
 network-manager-applet
 oniguruma
 otf-font-awesome
-paprefs
-pavucontrol
 polkit-gnome
-pulseaudio
 slurp
 sway
 swaybg
@@ -37,6 +34,7 @@ swaylock
 sysstat
 thunar
 thunar-archive-plugin
+thunar-media-tags-plugin
 thunar-volman
 ttf-jetbrains-mono
 ttf-nerd-fonts-symbols
