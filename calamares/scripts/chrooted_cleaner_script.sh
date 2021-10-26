@@ -425,6 +425,9 @@ _clean_up(){
         _remove_pkgs_if_installed dex
     fi
 
+    # enable TRIM systemd service
+    systemctl enable fstrim.timer
+
     # run possible user-given commands
     _RunUserCommands
 }
