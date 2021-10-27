@@ -9,7 +9,7 @@ used by the following PKGBUILD's:
 
 1. Calamares package itself:
 
-https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_next
+https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_current
 
 2. EndeavourOS specific configurations for default installs:
 
