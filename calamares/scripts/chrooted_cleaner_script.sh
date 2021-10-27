@@ -27,15 +27,28 @@ _is_pkg_installed() {
 
 _remove_a_pkg() {
     local pkgname="$1"
+    echo "==> removing $pkgname"
     pacman -Rsn --noconfirm "$pkgname"
 }
 
 _remove_pkgs_if_installed() {
     # removes given package(s) and possible dependencies if the package(s) are currently installed
     local pkgname
+    local removables=()
     for pkgname in "$@" ; do
-        _is_pkg_installed "$pkgname" && _remove_a_pkg "$pkgname"
+        if _is_pkg_installed "$pkgname" ; then
+            echo "==> removing $pkgname"
+            removables+=("$pkgname")
+        fi
     done
+    if [ -n "$removables" ] ; then
+        pacman -Rsn --noconfirm "${removables[@]}"
+    fi
+}
+
+_install_needed_packages() {
+    echo "==> installing $*"
+    pacman -S --needed --noconfirm "$@"
 }
 
 _vbox(){
@@ -48,13 +61,16 @@ _vbox(){
         virtualbox)
             # If using net-install detect VBox and install the packages
             if [ -f /tmp/run_once ] ; then
-                pacman -S --needed --noconfirm "${vbox_guest_packages[@]}"
+                _install_needed_packages "${vbox_guest_packages[@]}"
             fi
             ;;
         *)
             local pkg
             for pkg in "${vbox_guest_packages[@]}" ; do
-                _is_pkg_installed "$pkg" && pacman -Rnsdd "$pkg" --noconfirm
+                if _is_pkg_installed "$pkg" ; then
+                    echo "==> removing $pkg"
+                    pacman -Rnsdd "$pkg" --noconfirm
+                fi
             done
             #rm -f /usr/lib/modules-load.d/virtualbox-guest-dkms.conf   # not needed anymore?
             ;;
@@ -71,7 +87,7 @@ _vmware() {
 
     case "$vmname" in
         vmware)
-            pacman -S --needed --noconfirm "${vmware_guest_packages[@]}"
+            _install_needed_packages "${vmware_guest_packages[@]}"
             ;;
         *)
             local pkg
@@ -79,7 +95,7 @@ _vmware() {
                 if [ "$pkg" = "xf86-video-vmware" ] && [ "$vmname" = "virtualbox" ] ; then
                     continue                                                                 # virtualbox needs this package!
                 fi
-                _is_pkg_installed "$pkg" && pacman -Rns "$pkg" --noconfirm
+                _remove_pkgs_if_installed "$pkg"
             done
             ;;
     esac
@@ -91,12 +107,15 @@ _qemu() {
     )
     case "$(device-info --vm)" in
         qemu)                        # and 'kvm' ??
-            pacman -S --needed --noconfirm "${qemu_packages[@]}"
+            _install_needed_packages "${qemu_packages[@]}"
             ;;
         *)
             local pkg
             for pkg in "${qemu_packages[@]}" ; do
-                _is_pkg_installed "$pkg" && pacman -Rnsdd "$pkg" --noconfirm
+                if _is_pkg_installed "$pkg" ; then
+                    echo "==> removing $pkg"
+                    pacman -Rnsdd "$pkg" --noconfirm
+                fi
             done
             ;;
     esac
@@ -198,10 +217,21 @@ _clean_offline_packages(){
     memtest86+
     mkinitcpio-archiso
 )
-    local xx
+
     # @ does one by one to avoid errors in the entire process
     # * can be used to treat all packages in one command
-    for xx in ${_packages_to_remove[@]}; do pacman -Rsc $xx --noconfirm; done
+    # for xx in ${_packages_to_remove[@]}; do pacman -Rsc $xx --noconfirm; done
+
+    # remove these packages silently
+    local xx
+    local pkgs=()
+
+    for xx in "${_packages_to_remove[@]}" ; do
+        _is_pkg_installed "$xx" && pkgs+=("$xx")
+    done
+    if [ -n "$pkgs" ] ; then
+        pacman -Rsc --noconfirm "${pkgs[@]}"
+    fi
 
 }
 
@@ -271,9 +301,7 @@ _check_install_mode(){
 
 _remove_ucode(){
     local ucode="$1"
-    pacman -Q $ucode >& /dev/null && {
-        pacman -Rsn $ucode --noconfirm >/dev/null
-    }
+    _remove_pkgs_if_installed "$ucode"
 }
 
 _remove_other_graphics_drivers() {
@@ -321,7 +349,10 @@ _remove_or_blacklist_r8168() {
     if [ -n "$(lsmod | grep -Pw 'r8168|r8169')" ] || [ -n "$(lspci | grep -w Ethernet | grep -w 8168)" ] ; then
         # keep r8168 package but blacklist it; r8169 will be used by default
         xx=/usr/lib/modprobe.d/r8168.conf
-        test -r $xx && sed -i $xx -e 's|r8169|r8168|'
+        if [ -r $xx ] ; then
+            echo "==> blacklisting r8168"
+            sed -i $xx -e 's|r8169|r8168|'
+        fi
     else
         _remove_pkgs_if_installed r8168
     fi
@@ -339,7 +370,7 @@ _manage_nvidia_packages() {
             echo "==> Info: running the old nvidia mgmt code instead."
             if [ -z "$(lspci -k | grep -P 'VGA|3D|Display' | grep -w NVIDIA)" ] || [ -z "$(lspci -k | grep -B2 "Kernel driver in use: nvidia" | grep -P 'VGA|3D|Display')" ] ; then
                 local xx="$(pacman -Qqs nvidia* | grep ^nvidia)"
-                test -n "$xx" && pacman -Rsn $xx --noconfirm
+                [ -n "$xx" ] && _remove_a_pkg $xx
             fi
         fi
         return
@@ -351,11 +382,11 @@ _manage_nvidia_packages() {
         yes)
             local install=(nvidia-installer-dkms)
             [ "$nvidia_driver" = "yes" ] && install+=(nvidia-dkms)
-            pacman -S --needed --noconfirm "${install[@]}"
+            _install_needed_packages "${install[@]}"
             ;;
         no)
             local remove="$(pacman -Qqs nvidia* | grep ^nvidia)"
-            [ "$remove" != "" ] && pacman -Rsn --noconfirm $remove
+            [ -n "$remove" ] && _remove_a_pkg $remove
             ;;
     esac
 }
@@ -389,6 +420,7 @@ _misc_cleanups() {
 
     local file=/etc/resolv.conf.pacnew
     if [ -z "$(grep -Pv "^[ ]*#" $file 2>/dev/null)" ] ; then
+        echo "==> removing $file"
         rm -f $file                                            # pacnew contains only comments
     fi
 }
@@ -506,10 +538,10 @@ _change_config_options(){
 }
 
 _remove_gnome_software(){
-    pacman -Rsn --noconfirm gnome-software
+    _remove_a_pkg gnome-software
 }
 _remove_discover(){
-    pacman -Rsn --noconfirm discover
+    _remove_a_pkg discover
 }
 
 _run_hotfix_end() {
