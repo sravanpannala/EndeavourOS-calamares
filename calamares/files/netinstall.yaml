@@ -9,7 +9,9 @@
         selected: true
         packages:
            - libwnck3
+           - mesa-demos
            - xf86-input-libinput
+           - xorg-xdpyinfo
            - xorg-server
            - xorg-xinit
            - xorg-xinput
