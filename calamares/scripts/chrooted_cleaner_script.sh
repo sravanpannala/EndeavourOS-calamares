@@ -458,7 +458,7 @@ _clean_up(){
     fi
 
     # enable TRIM systemd service
-    systemctl enable fstrim.timer
+    # systemctl enable fstrim.timer # testing calamares services-systemd module calamares 3.2.45 update
 
     # run possible user-given commands
     _RunUserCommands
