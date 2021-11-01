@@ -381,7 +381,10 @@ _manage_nvidia_packages() {
     case "$nvidia_card" in
         yes)
             local install=(nvidia-installer-dkms)
-            [ "$nvidia_driver" = "yes" ] && install+=(nvidia-dkms)
+            if [ "$nvidia_driver" = "yes" ] ; then
+                install+=(nvidia-dkms)
+                nvidia-installer-kernel-para
+            fi
             _install_needed_packages "${install[@]}"
             ;;
         no)
@@ -436,9 +439,6 @@ _clean_up(){
         esac
     fi
 
-    # Fix various grub stuff.
-    _fix_grub_stuff
-
     # install or remove nvidia graphics stuff
     _manage_nvidia_packages
 
@@ -462,6 +462,9 @@ _clean_up(){
 
     # run possible user-given commands
     _RunUserCommands
+
+    # Fix various grub stuff.
+    _fix_grub_stuff
 }
 
 _desktop_i3(){
