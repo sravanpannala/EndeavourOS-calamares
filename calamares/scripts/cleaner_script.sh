@@ -99,9 +99,6 @@ _copy_files(){
         card=yes
         [ -n "$(lsmod | grep -w nvidia)" ]                                                   && driver=yes
         [ -n "$(echo "$lspci" | grep -wA2 NVIDIA | grep "Kernel driver in use: nvidia")" ]   && driver=yes
-        if [ -z "$(nvidia-driver-supported-branches | grep "Series $latest_nvidia_series: supported")" ] ; then
-            driver=no
-        fi
         if [ "$driver" = "yes" ] ; then
             echo "====> info: using nvidia driver"
         else

@@ -47,8 +47,10 @@ _remove_pkgs_if_installed() {
 }
 
 _install_needed_packages() {
-    echo "==> installing $*"
-    pacman -S --needed --noconfirm "$@"
+    if eos-connection-checker ; then
+        echo "==> installing if missing: $*"
+        pacman -S --needed --noconfirm "$@"
+    fi
 }
 
 _vbox(){
