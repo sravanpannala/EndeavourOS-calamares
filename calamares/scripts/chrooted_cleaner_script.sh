@@ -358,6 +358,30 @@ _remove_or_blacklist_r8168() {
     fi
 }
 
+_copy_extra_drivers_to_target() {
+    # If needed, copy extra driver packages from the ISO to the target system via target's /tmp folder.
+    local from=/tmp
+    local to=/opt/extra-packages
+    local pkg
+
+    # r8168 package
+    if [ -n "$(lsmod | grep -Pw 'r8168|r8169')" ] || [ -n "$(lspci | grep -w Ethernet | grep -w 8168)" ] ; then
+        pkg="$(/usr/bin/ls -1 $from/r8168-*-x86_64.pkg.tar.zst)"
+        if [ -n "$pkg" ] ; then
+            mkdir -p $to
+            cp "$pkg" $to
+        fi
+    fi
+}
+
+_remove_nvidia_drivers() {
+    local xx="$(pacman -Qqs nvidia | grep ^nvidia)"
+    if [ -n "$xx" ] ; then
+        echo "==> Info: removing nvidia drivers."
+        _remove_a_pkg $xx
+    fi
+}
+
 _manage_nvidia_packages() {
     local file=/tmp/nvidia-info.bash        # nvidia info from livesession
     local nvidia_card=""                    # these two variables are defined in $file
@@ -365,33 +389,16 @@ _manage_nvidia_packages() {
 
     if [ ! -r $file ] ; then
         echo "==> Warning: file $file does not exist!"
-
-        if [ 1 -eq 1 ] ; then       # this line: change first 1 to 0 when old code is not needed
-            echo "==> Info: running the old nvidia mgmt code instead."
-            if [ -z "$(lspci -k | grep -P 'VGA|3D|Display' | grep -w NVIDIA)" ] || [ -z "$(lspci -k | grep -B2 "Kernel driver in use: nvidia" | grep -P 'VGA|3D|Display')" ] ; then
-                local xx="$(pacman -Qqs nvidia* | grep ^nvidia)"
-                [ -n "$xx" ] && _remove_a_pkg $xx
-            fi
+        _remove_nvidia_drivers
+    else
+        source $file
+        if [ "$nvidia_driver" = "no" ] ; then
+            _remove_nvidia_drivers
+        elif [ "$nvidia_card" = "yes" ] ; then
+            _install_needed_packages nvidia-installer-dkms nvidia-dkms
+            nvidia-installer-kernel-para
         fi
-        return
     fi
-
-    source $file
-
-    case "$nvidia_card" in
-        yes)
-            local install=(nvidia-installer-dkms)
-            if [ "$nvidia_driver" = "yes" ] ; then
-                install+=(nvidia-dkms)
-                nvidia-installer-kernel-para
-            fi
-            _install_needed_packages "${install[@]}"
-            ;;
-        no)
-            local remove="$(pacman -Qqs nvidia* | grep ^nvidia)"
-            [ -n "$remove" ] && _remove_a_pkg $remove
-            ;;
-    esac
 }
 
 _run_if_exists_or_complain() {
@@ -449,6 +456,7 @@ _clean_up(){
     _remove_broadcom_wifi_driver
 
     _remove_or_blacklist_r8168
+    _copy_extra_drivers_to_target
 
     _misc_cleanups
 
