@@ -393,6 +393,7 @@ _remove_nvidia_drivers() {
     # for offline install:
     if /usr/bin/ls -1d /usr/src/nvidia-* >& /dev/null ; then
         _remove_a_pkg nvidia-dkms || true
+        _remove_a_pkg nvidia-utils || true
         _remove_a_pkg nvidia-installer-dkms || true
     fi
 }
