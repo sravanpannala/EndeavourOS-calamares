@@ -134,11 +134,19 @@ _os_lsb_release(){
 
     # Check if offline is still copying the files, sed is the way to go!
     # same as os-release hook
-    sed -i -e s'|^NAME=.*$|NAME=\"EndeavourOS\"|' -e s'|^PRETTY_NAME=.*$|PRETTY_NAME=\"EndeavourOS\"|' -e s'|^HOME_URL=.*$|HOME_URL=\"https://endeavouros.com\"|' -e s'|^DOCUMENTATION_URL=.*$|DOCUMENTATION_URL=\"https://endeavouros.com/wiki/\"|' -e s'|^SUPPORT_URL=.*$|SUPPORT_URL=\"https://forum.endeavouros.com\"|' -e s'|^BUG_REPORT_URL=.*$|BUG_REPORT_URL=\"https://github.com/endeavouros-team\"|' -e s'|^LOGO=.*$|LOGO=endeavouros|' /usr/lib/os-release
+    sed -i /usr/lib/os-release \
+        -e s'|^NAME=.*$|NAME=\"EndeavourOS\"|' \
+        -e s'|^PRETTY_NAME=.*$|PRETTY_NAME=\"EndeavourOS\"|' \
+        -e s'|^HOME_URL=.*$|HOME_URL=\"https://endeavouros.com\"|' \
+        -e s'|^DOCUMENTATION_URL=.*$|DOCUMENTATION_URL=\"https://endeavouros.com/wiki/\"|' \
+        -e s'|^SUPPORT_URL=.*$|SUPPORT_URL=\"https://forum.endeavouros.com\"|' \
+        -e s'|^BUG_REPORT_URL=.*$|BUG_REPORT_URL=\"https://github.com/endeavouros-team\"|' \
+        -e s'|^LOGO=.*$|LOGO=endeavouros|'
 
     # same as lsb-release hook
-    sed -i -e s'|^DISTRIB_ID=.*$|DISTRIB_ID=EndeavourOS|' -e s'|^DISTRIB_DESCRIPTION=.*$|DISTRIB_DESCRIPTION=\"EndeavourOS Linux\"|' /etc/lsb-release
-
+    sed -i /etc/lsb-release \
+        -e s'|^DISTRIB_ID=.*$|DISTRIB_ID=EndeavourOS|' \
+        -e s'|^DISTRIB_DESCRIPTION=.*$|DISTRIB_DESCRIPTION=\"EndeavourOS Linux\"|'
 }
 
 _clean_archiso(){
@@ -379,8 +387,13 @@ _copy_extra_drivers_to_target() {
 _remove_nvidia_drivers() {
     local xx="$(pacman -Qqs nvidia | grep ^nvidia)"
     if [ -n "$xx" ] ; then
-        echo "==> Info: removing nvidia drivers."
         _remove_a_pkg $xx
+        return
+    fi
+    # for offline install:
+    if /usr/bin/ls -1d /usr/src/nvidia-* >& /dev/null ; then
+        _remove_a_pkg nvidia-dkms || true
+        _remove_a_pkg nvidia-installer-dkms || true
     fi
 }
 
