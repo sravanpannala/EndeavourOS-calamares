@@ -77,7 +77,7 @@ touch /tmp/run_once
 
 _files_to_copy=(
 
-/etc/calamares/scripts/{chrooted_cleaner_script,cleaner_script}.sh
+#/etc/calamares/scripts/{chrooted_cleaner_script,cleaner_script}.sh
 /etc/pacman.conf
 /tmp/run_once
 /etc/default/grub
