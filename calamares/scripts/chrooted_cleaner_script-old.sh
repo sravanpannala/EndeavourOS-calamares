@@ -16,11 +16,10 @@ fi
 
 _check_internet_connection(){
     #ping -c 1 8.8.8.8 >& /dev/null   # ping Google's address
-    #curl --silent --connect-timeout 8 https://8.8.8.8 > /dev/null
-    eos-connection-checker
+    curl --silent --connect-timeout 8 https://8.8.8.8 > /dev/null
 }
 
-_is_pkg_installed() {  # this is not meant for offline mode !?
+_is_pkg_installed() {
     # returns 0 if given package name is installed, otherwise 1
     local pkgname="$1"
     pacman -Q "$pkgname" >& /dev/null
@@ -32,7 +31,7 @@ _remove_a_pkg() {
     pacman -Rsn --noconfirm "$pkgname"
 }
 
-_remove_pkgs_if_installed() {  # this is not meant for offline mode !?
+_remove_pkgs_if_installed() {
     # removes given package(s) and possible dependencies if the package(s) are currently installed
     local pkgname
     local removables=()
@@ -51,12 +50,8 @@ _install_needed_packages() {
     if eos-connection-checker ; then
         echo "==> installing if missing: $*"
         pacman -S --needed --noconfirm "$@"
-    else
-        echo "==> Warning: no internet connection, cannot install packages $*"
     fi
 }
-
-# For virtual machines we assume internet connection exists.
 
 _vbox(){
     local vbox_guest_packages=(
@@ -67,13 +62,17 @@ _vbox(){
     case "$(device-info --vm)" in           # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
         virtualbox)
             # If using net-install detect VBox and install the packages
-            _install_needed_packages "${vbox_guest_packages[@]}"
+            if [ -f /tmp/run_once ] ; then
+                _install_needed_packages "${vbox_guest_packages[@]}"
+            fi
             ;;
         *)
             local pkg
             for pkg in "${vbox_guest_packages[@]}" ; do
-                echo "==> removing $pkg"
-                pacman -Rnsdd "$pkg" --noconfirm
+                if _is_pkg_installed "$pkg" ; then
+                    echo "==> removing $pkg"
+                    pacman -Rnsdd "$pkg" --noconfirm
+                fi
             done
             #rm -f /usr/lib/modules-load.d/virtualbox-guest-dkms.conf   # not needed anymore?
             ;;
@@ -98,7 +97,7 @@ _vmware() {
                 if [ "$pkg" = "xf86-video-vmware" ] && [ "$vmname" = "virtualbox" ] ; then
                     continue                                                                 # virtualbox needs this package!
                 fi
-                _remove_a_pkg "$pkg"
+                _remove_pkgs_if_installed "$pkg"
             done
             ;;
     esac
@@ -115,8 +114,10 @@ _qemu() {
         *)
             local pkg
             for pkg in "${qemu_packages[@]}" ; do
-                echo "==> removing $pkg"
-                pacman -Rnsdd "$pkg" --noconfirm
+                if _is_pkg_installed "$pkg" ; then
+                    echo "==> removing $pkg"
+                    pacman -Rnsdd "$pkg" --noconfirm
+                fi
             done
             ;;
     esac
@@ -231,11 +232,17 @@ _clean_offline_packages(){
     # * can be used to treat all packages in one command
     # for xx in ${_packages_to_remove[@]}; do pacman -Rsc $xx --noconfirm; done
 
+    # remove these packages silently
     local xx
+    local pkgs=()
 
     for xx in "${_packages_to_remove[@]}" ; do
-        pacman -Rsc --noconfirm "$xx"
+        _is_pkg_installed "$xx" && pkgs+=("$xx")
     done
+    if [ -n "$pkgs" ] ; then
+        pacman -Rsc --noconfirm "${pkgs[@]}"
+    fi
+
 }
 
 _endeavouros(){
@@ -273,19 +280,10 @@ Server = https://mirror.lty.me/archlinux/\$repo/os/\$arch
 EOF
 }
 
-_is_offline_mode() {
-    if [ -f /tmp/run_once ] ; then
-        return 1           # online install mode
-    else
-        return 0           # offline install mode
-    fi
-}
-_is_online_mode() { ! _is_offline_mode ; }
-
 
 _check_install_mode(){
 
-    if _is_online_mode ; then
+    if [ -f /tmp/run_once ] ; then
         local INSTALL_OPTION="ONLINE_MODE"
     else
         local INSTALL_OPTION="OFFLINE_MODE"
@@ -313,7 +311,7 @@ _check_install_mode(){
 
 _remove_ucode(){
     local ucode="$1"
-    _remove_a_pkg "$ucode"
+    _remove_pkgs_if_installed "$ucode"
 }
 
 _remove_other_graphics_drivers() {
@@ -322,7 +320,7 @@ _remove_other_graphics_drivers() {
 
     # remove Intel graphics driver if it is not needed
     if [ -z "$(echo "$graphics" | grep "Intel Corporation")" ] ; then
-        _remove_a_pkg xf86-video-intel
+        _remove_pkgs_if_installed xf86-video-intel
     fi
 
     # remove AMD graphics driver if it is not needed
@@ -334,8 +332,7 @@ _remove_other_graphics_drivers() {
         amd=yes
     fi
     if [ "$amd" = "no" ] ; then
-        _remove_a_pkg xf86-video-amdgpu
-        _remove_a_pkg xf86-video-ati
+        _remove_pkgs_if_installed xf86-video-amdgpu xf86-video-ati
     fi
 }
 
@@ -344,7 +341,7 @@ _remove_broadcom_wifi_driver() {
     local wifi_pci
     local wifi_driver
 
-    # _is_pkg_installed $pkgname && {
+    _is_pkg_installed $pkgname && {
         wifi_pci="$(lspci -k | grep -A4 " Network controller: ")"
         if [ -n "$(lsusb | grep " Broadcom ")" ] || [ -n "$(echo "$wifi_pci" | grep " Broadcom ")" ] ; then
             return
@@ -354,7 +351,7 @@ _remove_broadcom_wifi_driver() {
             return
         fi
         _remove_a_pkg $pkgname
-    # }
+    }
 }
 
 _remove_or_blacklist_r8168() {
@@ -367,7 +364,7 @@ _remove_or_blacklist_r8168() {
             sed -i $xx -e 's|r8169|r8168|'
         fi
     else
-        _remove_a_pkg r8168
+        _remove_pkgs_if_installed r8168
     fi
 }
 
@@ -388,19 +385,16 @@ _copy_extra_drivers_to_target() {
 }
 
 _remove_nvidia_drivers() {
-    local remove="pacman -Rsc --noconfirm"
-    echo "==> removing nvidia packages"
-    $remove nvidia-dkms
-    $remove nvidia-utils
-    $remove nvidia-settings
-    $remove nvidia-installer-dkms
-
-    local pkgs="$(pacman -Qqs nvidia | grep ^nvidia)"
-    local pkg
-    if [ -n "$pkgs" ] ; then
-        for pkg in $pkgs ; do
-            $remove $pkg
-        done
+    local xx="$(pacman -Qqs nvidia | grep ^nvidia)"
+    if [ -n "$xx" ] ; then
+        _remove_a_pkg $xx
+        return
+    fi
+    # for offline install:
+    if /usr/bin/ls -1d /usr/src/nvidia-* >& /dev/null ; then
+        _remove_a_pkg nvidia-dkms || true
+        _remove_a_pkg nvidia-utils || true
+        _remove_a_pkg nvidia-installer-dkms || true
     fi
 }
 
@@ -484,7 +478,7 @@ _clean_up(){
 
     # if both Xfce and i3 are installed, remove dex package
     if [ -r /usr/share/xsessions/xfce.desktop ] && [ -r /usr/share/xsessions/i3.desktop ] ; then
-        _remove_a_pkg dex
+        _remove_pkgs_if_installed dex
     fi
 
     # enable TRIM systemd service
