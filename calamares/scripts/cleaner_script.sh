@@ -116,6 +116,13 @@ _copy_files(){
     mkdir -p $target/usr/share/X11/xorg.conf.d
     cp /usr/share/X11/xorg.conf.d/30-touchpad.conf  $target/usr/share/X11/xorg.conf.d/
 
+    # copy extra drivers from /opt/extra-drivers to target's /opt/extra-drivers
+    if [ -n "$(/usr/bin/ls /opt/extra-drivers/*.zst 2>/dev/null)" ] ; then
+        echo "====> Copying extra drivers to target"
+        mkdir -p $target/opt/extra-drivers
+        cp /opt/extra-drivers/*.zst $target/opt/extra-drivers/
+    fi
+
     # copy endeavouros-release file
     local file=/usr/lib/endeavouros-release
     if [ -r $file ] ; then
