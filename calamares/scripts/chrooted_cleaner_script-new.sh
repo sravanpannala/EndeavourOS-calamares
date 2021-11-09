@@ -390,7 +390,7 @@ _copy_extra_drivers_to_target() {
 
 _remove_nvidia_drivers() {
     local remove="pacman -Rsc --noconfirm"
-    echo "==> removing nvidia packages"
+    echo "==> removing nvidia packages" >&2
     $remove nvidia-dkms
     $remove nvidia-utils
     $remove nvidia-settings
@@ -400,7 +400,7 @@ _remove_nvidia_drivers() {
     local pkg
     if [ -n "$pkgs" ] ; then
         for pkg in $pkgs ; do
-            $remove $xx
+            $remove $pkg
         done
     fi
 }
