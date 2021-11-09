@@ -390,6 +390,7 @@ _copy_extra_drivers_to_target() {
 
 _remove_nvidia_drivers() {
     local remove="pacman -Rsc --noconfirm"
+    echo "==> removing nvidia packages"
     $remove nvidia-dkms
     $remove nvidia-utils
     $remove nvidia-settings
