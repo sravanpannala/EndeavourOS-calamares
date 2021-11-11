@@ -164,7 +164,6 @@
           - eos-rankmirrors
           - eos-update-notifier
           - grub-tools
-          - keyserver-rank
           - reflector-simple
           - welcome
           - yad-eos
