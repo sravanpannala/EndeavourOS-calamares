@@ -417,7 +417,7 @@ _manage_nvidia_packages() {
         if [ "$nvidia_driver" = "no" ] ; then
             _remove_nvidia_drivers
         elif [ "$nvidia_card" = "yes" ] ; then
-            #_install_needed_packages nvidia-installer-dkms nvidia-dkms
+            _install_needed_packages nvidia-installer-dkms nvidia-dkms
             nvidia-installer-kernel-para
         fi
     fi
