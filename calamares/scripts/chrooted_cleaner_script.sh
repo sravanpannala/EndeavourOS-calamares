@@ -397,6 +397,7 @@ _remove_nvidia_drivers() {
         $remove nvidia-settings
         $remove nvidia-installer-dkms
     else
+        return   # not needed for online!
         echo "==> removing nvidia packages (online)"
         local pkgs="$(pacman -Qqs nvidia | grep ^nvidia)"
         local pkg
