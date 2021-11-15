@@ -482,7 +482,7 @@ _clean_up(){
     # remove broadcom-wl-dkms if it is not needed
     _remove_broadcom_wifi_driver
 
-    _remove_or_blacklist_r8168
+    # _remove_or_blacklist_r8168
     _copy_extra_drivers_to_target
 
     _misc_cleanups
