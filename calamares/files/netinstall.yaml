@@ -53,7 +53,6 @@
           - openvpn
           - ppp
           - pptpclient
-          - r8168
           - rp-pppoe
           - sshfs
           - usb_modeswitch
