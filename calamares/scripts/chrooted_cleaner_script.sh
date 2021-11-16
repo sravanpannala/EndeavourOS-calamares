@@ -616,4 +616,4 @@ _de_wm_config
 _clean_up
 _run_hotfix_end
 
-rm -R /etc/calamares
+rm -R /etc/calamares /opt/extra-drivers
