@@ -122,6 +122,9 @@ _copy_files(){
         mkdir -p $target/opt/extra-drivers
         cp /opt/extra-drivers/*.zst $target/opt/extra-drivers/
     fi
+    if [ -n "$(lsmod | grep r8168)" ] ; then
+        touch $target/tmp/r8168_in_use
+    fi
 
     # copy endeavouros-release file
     local file=/usr/lib/endeavouros-release

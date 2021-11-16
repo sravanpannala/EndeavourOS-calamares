@@ -372,17 +372,21 @@ _remove_or_blacklist_r8168() {
 }
 
 _copy_extra_drivers_to_target() {
-    # If needed, copy extra driver packages from the ISO to the target system via target's /tmp folder.
-    local from=/tmp
-    local to=/opt/extra-packages
+    local dir=/opt/extra-packages
     local pkg
 
     # r8168 package
-    if [ -n "$(lsmod | grep -Pw 'r8168|r8169')" ] || [ -n "$(lspci | grep -w Ethernet | grep -w 8168)" ] ; then
-        pkg="$(/usr/bin/ls -1 $from/r8168-*-x86_64.pkg.tar.zst)"
-        if [ -n "$pkg" ] ; then
-            mkdir -p $to
-            cp "$pkg" $to
+    if [ -r /tmp/r8168_in_use ] ; then
+        if _is_offline_mode ; then
+            pkg="$(/usr/bin/ls -1 $dir/r8168-*-x86_64.pkg.tar.zst)"
+            if [ -n "$pkg" ] ; then
+                echo "==> installing r8168 (offline)"
+                pacman -U --noconfirm $pkg
+            else
+                echo "==> error: no r8168 package in folder $dir!"
+            fi
+        else
+            _install_needed_packages r8168
         fi
     fi
 }
