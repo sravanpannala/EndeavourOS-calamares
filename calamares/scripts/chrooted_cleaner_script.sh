@@ -138,7 +138,7 @@ _virtual_machines() {    # new implementation
 
     local pkgs_common="xf86-video-vmware"
     local pkgs_vbox="virtualbox-guest-utils"
-    local pkgs_qemu="qemu-guest-agent spice-vdagent xf86-video-qxl"
+    local pkgs_qemu="qemu-guest-agent spice-vdagent"  # xf86-video-qxl ??
     local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
     local remove="pacman -Rns --noconfirm"
 
