@@ -44,7 +44,6 @@
           - modemmanager
           - nbd
           - ndisc6
-          - net-tools
           - networkmanager
           - networkmanager-openvpn
           - nmap
