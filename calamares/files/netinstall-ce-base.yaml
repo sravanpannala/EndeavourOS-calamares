@@ -45,7 +45,6 @@
           - nbd
           - ndisc6
           - netctl
-          - net-tools
           - networkmanager
           - networkmanager-openvpn
           - nmap
