@@ -56,6 +56,8 @@ _install_needed_packages() {
     fi
 }
 
+if [ 0 -eq 1 ] ; then
+
 # For virtual machines we assume internet connection exists.
 
 _vbox(){
@@ -95,8 +97,10 @@ _vmware() {
         *)
             local pkg
             for pkg in "${vmware_guest_packages[@]}" ; do
-                if [ "$pkg" = "xf86-video-vmware" ] && [ "$vmname" = "virtualbox" ] ; then
-                    continue                                                                 # virtualbox needs this package!
+                if [ "$pkg" = "xf86-video-vmware" ] ; then
+                    case "$vmname" in
+                        virtualbox | qemu) continue ;;                 # virtualbox needs this package! And qemu?
+                    esac
                 fi
                 _remove_a_pkg "$pkg"
             done
@@ -121,6 +125,46 @@ _qemu() {
             ;;
     esac
 }
+
+_virtual_machines() {    # old implementation
+    _vmware
+    _vbox
+    _qemu
+}
+
+else
+
+_virtual_machines() {    # new implementation
+
+    local pkgs_common="xf86-video-vmware"
+    local pkgs_vbox="virtualbox-guest-utils"
+    local pkgs_qemu="qemu-guest-agent spice-vdagent xf86-video-qxl"
+    local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
+    local remove="pacman -Rns --noconfirm"
+
+    case "$(device-info --vm)" in               # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
+        virtualbox)
+            $remove $pkgs_qemu $pkgs_vmware
+            _install_needed_packages $pkgs_vbox $pkgs_common
+            ;;
+        vmware)
+            $remove $pkgs_qemu $pkgs_vbox
+            _install_needed_packages $pkgs_vmware $pkgs_common
+            ;;
+        qemu)
+            # common pkgs ??
+            $remove $pkgs_vmware $pkgs_vbox $pkgs_common
+            _install_needed_packages $pkgs_qemu
+            ;;
+        kvm)
+            echo "==> warning: kvm is not supported"
+            ;;
+        *)
+            $remove $pkgs_vbox $pkgs_qemu $pkgs_vmware $pkgs_common
+            ;;
+    esac
+}
+fi
 
 _sed_stuff(){
 
@@ -605,9 +649,7 @@ _run_hotfix_end() {
 _check_install_mode
 _endeavouros
 #_os_lsb_release
-_vmware
-_vbox
-_qemu
+_virtual_machines
 _change_config_options
 #_remove_gnome_software
 #_remove_discover
