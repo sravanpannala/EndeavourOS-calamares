@@ -151,8 +151,11 @@ _virtual_machines() {    # old implementation
 else
 
 _virt_remove() {
-    _pkg_msg remove "$*"
-    pacman -Rns --noconfirm "$@"
+    local pkg
+    for pkg in "$@" ; do
+        _pkg_msg remove "$pkg"
+        pacman -Rns --noconfirm "$pkg"
+    done
 }
 
 _virtual_machines() {    # new implementation
