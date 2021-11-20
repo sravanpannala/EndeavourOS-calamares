@@ -534,8 +534,8 @@ _clean_up(){
     # Remove the "wrong" microcode.
     if [ -x /usr/bin/device-info ] ; then
         case "$(/usr/bin/device-info --cpu)" in
-            GenuineIntel) _remove_ucode amd-ucode ;;
-            *)            _remove_ucode intel-ucode ;;
+            GenuineIntel)       _remove_ucode amd-ucode ;;
+            AuthenticAMD | *)   _remove_ucode intel-ucode ;;
         esac
     fi
 
