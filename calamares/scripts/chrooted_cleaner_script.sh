@@ -6,6 +6,22 @@
 # Net-install creates the file /tmp/run_once in live environment (need to be transfered to installed system) so it can be used to detect install option
 # ISO-NEXT specific cleanup removals and additions (08-2021) @killajoe and @manuel
 
+_c_c_s_msg() {            # use this to provide all user messages (info, warning, error, ...)
+    local type="$1"
+    local msg="$2"
+    echo "==> $type: $msg"
+}
+
+_pkg_msg() {            # use this to provide all package management messages (install, uninstall)
+    local type="$1"
+    local pkgs="$2"
+    case "$type" in
+        remove | uninstall) type="uninstalling" ;;
+        install) type="installing" ;;
+    esac
+    echo "==> $type $pkgs"
+}
+
 if [ -f /tmp/new_username.txt ]
 then
     NEW_USER=$(cat /tmp/new_username.txt)
@@ -28,7 +44,7 @@ _is_pkg_installed() {  # this is not meant for offline mode !?
 
 _remove_a_pkg() {
     local pkgname="$1"
-    echo "==> removing $pkgname"
+    _pkg_msg remove "$pkgname"
     pacman -Rsn --noconfirm "$pkgname"
 }
 
@@ -38,7 +54,7 @@ _remove_pkgs_if_installed() {  # this is not meant for offline mode !?
     local removables=()
     for pkgname in "$@" ; do
         if _is_pkg_installed "$pkgname" ; then
-            echo "==> removing $pkgname"
+            _pkg_msg remove "removing $pkgname"
             removables+=("$pkgname")
         fi
     done
@@ -49,10 +65,10 @@ _remove_pkgs_if_installed() {  # this is not meant for offline mode !?
 
 _install_needed_packages() {
     if eos-connection-checker ; then
-        echo "==> installing if missing: $*"
+        _pkg_msg install "if missing: $*"
         pacman -S --needed --noconfirm "$@"
     else
-        echo "==> Warning: no internet connection, cannot install packages $*"
+        _c_c_s_msg warning "no internet connection, cannot install packages $*"
     fi
 }
 
@@ -74,7 +90,7 @@ _vbox(){
         *)
             local pkg
             for pkg in "${vbox_guest_packages[@]}" ; do
-                echo "==> removing $pkg"
+                _pkg_msg remove "$pkg"
                 pacman -Rnsdd "$pkg" --noconfirm
             done
             #rm -f /usr/lib/modules-load.d/virtualbox-guest-dkms.conf   # not needed anymore?
@@ -119,7 +135,7 @@ _qemu() {
         *)
             local pkg
             for pkg in "${qemu_packages[@]}" ; do
-                echo "==> removing $pkg"
+                _pkg_msg remove "$pkg"
                 pacman -Rnsdd "$pkg" --noconfirm
             done
             ;;
@@ -134,33 +150,37 @@ _virtual_machines() {    # old implementation
 
 else
 
+_virt_remove() {
+    _pkg_msg remove "$*"
+    pacman -Rns --noconfirm "$@"
+}
+
 _virtual_machines() {    # new implementation
 
     local pkgs_common="xf86-video-vmware"
     local pkgs_vbox="virtualbox-guest-utils"
     local pkgs_qemu="qemu-guest-agent spice-vdagent"  # xf86-video-qxl ??
     local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
-    local remove="pacman -Rns --noconfirm"
 
     case "$(device-info --vm)" in               # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
         virtualbox)
-            $remove $pkgs_qemu $pkgs_vmware
+            _virt_remove $pkgs_qemu $pkgs_vmware
             _install_needed_packages $pkgs_vbox $pkgs_common
             ;;
         vmware)
-            $remove $pkgs_qemu $pkgs_vbox
+            _virt_remove $pkgs_qemu $pkgs_vbox
             _install_needed_packages $pkgs_vmware $pkgs_common
             ;;
         qemu)
             # common pkgs ??
-            $remove $pkgs_vmware $pkgs_vbox $pkgs_common
+            _virt_remove $pkgs_vmware $pkgs_vbox $pkgs_common
             _install_needed_packages $pkgs_qemu
             ;;
         kvm)
-            echo "==> warning: kvm is not supported"
+            _c_c_s_msg warning "kvm is not supported"
             ;;
         *)
-            $remove $pkgs_vbox $pkgs_qemu $pkgs_vmware $pkgs_common
+            _virt_remove $pkgs_vbox $pkgs_qemu $pkgs_vmware $pkgs_common
             ;;
     esac
 }
@@ -407,7 +427,7 @@ _remove_or_blacklist_r8168() {
         # keep r8168 package but blacklist it; r8169 will be used by default
         xx=/usr/lib/modprobe.d/r8168.conf
         if [ -r $xx ] ; then
-            echo "==> blacklisting r8168"
+            _c_c_s_msg info "blacklisting r8168"
             sed -i $xx -e 's|r8169|r8168|'
         fi
     else
@@ -424,10 +444,10 @@ _copy_extra_drivers_to_target() {
         if _is_offline_mode ; then
             pkg="$(/usr/bin/ls -1 $dir/r8168-*-x86_64.pkg.tar.zst)"
             if [ -n "$pkg" ] ; then
-                echo "==> installing r8168 (offline)"
+                _pkg_msg install "r8168 (offline)"
                 pacman -U --noconfirm $pkg
             else
-                echo "==> error: no r8168 package in folder $dir!"
+                _c_c_s_msg error "no r8168 package in folder $dir!"
             fi
         else
             _install_needed_packages r8168
@@ -435,25 +455,20 @@ _copy_extra_drivers_to_target() {
     fi
 }
 
+_nvidia_remove() {
+    _pkg_msg remove "$*"
+    pacman -Rsc --noconfirm "$@"
+}
+
 _remove_nvidia_drivers() {
     local remove="pacman -Rsc --noconfirm"
 
     if _is_offline_mode ; then
-        echo "==> removing nvidia packages (offline)"
-        $remove nvidia-dkms
-        $remove nvidia-utils
-        $remove nvidia-settings
-        $remove nvidia-installer-dkms
-    else
-        return   # not needed for online!
-        echo "==> removing nvidia packages (online)"
-        local pkgs="$(pacman -Qqs nvidia | grep ^nvidia)"
-        local pkg
-        if [ -n "$pkgs" ] ; then
-            for pkg in $pkgs ; do
-                $remove $pkg
-            done
-        fi
+        # delete packages separately to avoid all failing if one fails
+        _nvidia_remove nvidia-dkms
+        _nvidia_remove nvidia-utils
+        _nvidia_remove nvidia-settings
+        _nvidia_remove nvidia-installer-dkms
     fi
 }
 
@@ -463,7 +478,7 @@ _manage_nvidia_packages() {
     local nvidia_driver=""
 
     if [ ! -r $file ] ; then
-        echo "==> Warning: file $file does not exist!"
+        _c_c_s_msg warning "file $file does not exist!"
         _remove_nvidia_drivers
     else
         source $file
@@ -480,10 +495,10 @@ _run_if_exists_or_complain() {
     local app="$1"
 
     if (which "$app" >& /dev/null) ; then
-        echo "==> Info: running $*"
+        _c_c_s_msg info "running $*"
         "$@"
     else
-        echo "==> Warning: program $app not found."
+        _c_c_s_msg warning "program $app not found."
     fi
 }
 
@@ -495,7 +510,7 @@ _fix_grub_stuff() {
 _RunUserCommands() {
     local usercmdfile=/tmp/user_commands.bash
     if [ -r $usercmdfile ] ; then
-        echo "==> running $(basename $usercmdfile)"
+        _c_c_s_msg info "running script $(basename $usercmdfile)"
         bash $usercmdfile
     fi
 }
@@ -505,7 +520,7 @@ _misc_cleanups() {
 
     local file=/etc/resolv.conf.pacnew
     if [ -z "$(grep -Pv "^[ ]*#" $file 2>/dev/null)" ] ; then
-        echo "==> removing $file"
+        _c_c_s_msg info "removing file $file"
         rm -f $file                                            # pacnew contains only comments
     fi
 }
@@ -555,7 +570,7 @@ _desktop_i3(){
     # Note: variable 'desktop' from '_another_case' is visible here too!
 
     if ! _check_internet_connection ; then
-        echo "==> Cannot fetch i3 configs, no connection."
+        _c_c_s_msg warning "cannot fetch i3 configs, no connection."
         return
     fi
 
@@ -612,7 +627,7 @@ _setup_personal() {
         popd >/dev/null
         rm -rf $tmpdir
     else
-        echo "Info: $FUNCNAME: $file not found." >&2
+        _c_c_s_msg info "$FUNCNAME: $file not found." >&2
     fi
 }
 
@@ -632,12 +647,15 @@ _remove_discover(){
 
 _run_hotfix_end() {
     local file=hotfix-end.bash
+    local type=""
     if ! _check_internet_connection ; then
-        echo "==> Cannot fetch $file, no connection."
+        _is_offline_mode && type=info || type=warning
+        _c_c_s_msg $type "cannot fetch $file, no connection."
         return
     fi
     local url=$(eos-github2gitlab https://raw.githubusercontent.com/endeavouros-team/ISO-hotfixes/main/$file)
     wget --timeout=60 -q -O /tmp/$file $url && {
+        _c_c_s_msg info "running script $file"
         bash /tmp/$file
     }
 }

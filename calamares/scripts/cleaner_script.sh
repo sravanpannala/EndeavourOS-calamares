@@ -4,6 +4,13 @@
 # Adapted from AIS. An excellent bit of code!
 # ISO-NEXT specific cleanup removals and additions (08-2021) @killajoe and @manuel
 
+
+_cleaner_msg() {            # use this to provide all user messages (info, warning, error, ...)
+    local type="$1"
+    local msg="$2"
+    echo "==> $type: $msg"
+}
+
 if [ -f /tmp/chrootpath.txt ]
 then 
     chroot_path=$(cat /tmp/chrootpath.txt |sed 's/\/tmp\///')
@@ -12,7 +19,7 @@ else
 fi
 
 if [ -z "$chroot_path" ] ; then
-    echo "Fatal error: cleaner_script.sh: chroot_path is empty!"
+    _cleaner_msg "Fatal error" "cleaner_script.sh: chroot_path is empty!"
 fi
 
 if [ -f /tmp/new_username.txt ]
@@ -43,14 +50,14 @@ _CopyFileToTarget() {
     local targetdir="$2"
 
     if [ ! -r "$file" ] ; then
-        echo "====> warning: file '$file' does not exist."
+        _cleaner_msg warning "file '$file' does not exist."
         return
     fi
     if [ ! -d "$targetdir" ] ; then
-        echo "====> warning: folder '$targetdir' does not exist."
+        _cleaner_msg warning "folder '$targetdir' does not exist."
         return
     fi
-    echo "====> copying $(basename "$file") to target"
+    _cleaner_msg info "copying $(basename "$file") to target"
     cp "$file" "$targetdir"
 }
 
@@ -61,15 +68,15 @@ _copy_files(){
     if [ -x $target/usr/bin/sddm ] ; then
         # This is for online install only, because offline install is set to use lightdm.
 
-        echo "====> Copying DM config file $config_file to target"
+        _cleaner_msg info "copying DM config file $config_file to target"
 
         config_file=/etc/sddm.conf.d/kde_settings.conf
         mkdir -p $target$(dirname $config_file)
         cp /etc/calamares/files/sddm.conf.d/kde_settings.conf $target$config_file
     fi
 
-    if [ -x $target/usr/bin/lightdm ] ; then        
-        echo "====> Copying DM config file $config_file to target"
+    if [ -x $target/usr/bin/lightdm ] ; then
+        _cleaner_msg info "copying DM config file $config_file to target"
 
         config_file=/etc/lightdm/slick-greeter.conf
         rsync -vaRI $config_file $target
@@ -80,7 +87,7 @@ _copy_files(){
         # /home/liveuser/setup.url contains the URL to personal setup.sh
         local URL="$(cat /home/liveuser/setup.url)"
         if (wget -q -O /home/liveuser/setup.sh "$URL") ; then
-            echo "====> Copying setup.sh to target"
+            _cleaner_msg info "copying setup.sh to target"
             cp /home/liveuser/setup.sh $target/tmp/   # into /tmp/setup.sh of chrooted
         fi
     fi
@@ -100,9 +107,9 @@ _copy_files(){
         [ -n "$(lsmod | grep -w nvidia)" ]                                                   && driver=yes
         [ -n "$(echo "$lspci" | grep -wA2 NVIDIA | grep "Kernel driver in use: nvidia")" ]   && driver=yes
         if [ "$driver" = "yes" ] ; then
-            echo "====> info: using nvidia driver"
+            _cleaner_msg info "using nvidia driver"
         else
-            echo "====> info: using nouveau driver"
+            _cleaner_msg info "using nouveau driver"
         fi
     fi
     echo "nvidia_card=$card"     >> $nvidia_file
@@ -112,17 +119,18 @@ _copy_files(){
     _CopyFileToTarget /home/liveuser/user_commands.bash $target/tmp
 
     # copy 30-touchpad.conf Xorg config file
-    echo "====> Copying 30-touchpad.conf to target"
+    _cleaner_msg info "copying 30-touchpad.conf to target"
     mkdir -p $target/usr/share/X11/xorg.conf.d
     cp /usr/share/X11/xorg.conf.d/30-touchpad.conf  $target/usr/share/X11/xorg.conf.d/
 
     # copy extra drivers from /opt/extra-drivers to target's /opt/extra-drivers
     if [ -n "$(/usr/bin/ls /opt/extra-drivers/*.zst 2>/dev/null)" ] ; then
-        echo "====> Copying extra drivers to target"
+        _cleaner_msg info "copying extra drivers to target"
         mkdir -p $target/opt/extra-drivers
         cp /opt/extra-drivers/*.zst $target/opt/extra-drivers/
     fi
     if [ -n "$(lsmod | grep r8168)" ] ; then
+        _cleaner_msg info "detected usage of r8168 driver"
         touch $target/tmp/r8168_in_use
     fi
 
@@ -130,11 +138,11 @@ _copy_files(){
     local file=/usr/lib/endeavouros-release
     if [ -r $file ] ; then
         if [ ! -r $target$file ] ; then
-            echo "====> Copying $file to target"
+            _cleaner_msg info "copying $file to target"
             rsync -vaRI $file $target
         fi
     else
-        echo "==> $FUNCNAME: error: file $file does not exist in the ISO, copy to target failed!"
+        _cleaner_msg warning "$FUNCNAME: file $file does not exist in the ISO, copy to target failed!"
     fi
 }
 
