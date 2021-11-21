@@ -5,7 +5,7 @@ New merged repository structure (october 2021) by joekamprad this repo now holds
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2021.svg)]()
 
-For Calamares EndeavourOS version NEXT
+## Calamares EndeavourOS repository:
 
 used by the following PKGBUILD's:
 
