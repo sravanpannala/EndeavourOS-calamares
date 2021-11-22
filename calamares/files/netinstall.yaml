@@ -129,7 +129,7 @@
           - paprefs
           - pavucontrol
           - pipewire-pulse
-          - pipewire-media-session    
+          - pipewire-media-session
           - pipewire-alsa
           - pipewire-jack
       - name: "hardware"
