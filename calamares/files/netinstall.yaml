@@ -60,7 +60,6 @@
           - wireless-regdb
           - wireless_tools
           - wpa_supplicant
-          - wvdial
           - xl2tpd
       - name: "packages management"
         description: "Packages tools"
