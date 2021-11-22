@@ -9,9 +9,9 @@
         selected: true
         packages:
            - libwnck3
+           - mesa-demos
            - xf86-input-libinput
-           - xf86-video-fbdev
-           - xf86-video-vesa
+           - xorg-xdpyinfo
            - xorg-server
            - xorg-xinit
            - xorg-xinput
@@ -44,12 +44,10 @@
           - modemmanager
           - nbd
           - ndisc6
-          - netctl
           - networkmanager
           - networkmanager-openvpn
           - nmap
           - nss-mdns
-          - ntfs-3g
           - openconnect
           - openvpn
           - ppp
@@ -62,7 +60,6 @@
           - wireless-regdb
           - wireless_tools
           - wpa_supplicant
-          - wvdial
           - xl2tpd
       - name: "packages management"
         description: "Packages tools"
@@ -131,7 +128,7 @@
           - paprefs
           - pavucontrol
           - pipewire-pulse
-          - pipewire-media-session    
+          - pipewire-media-session
           - pipewire-alsa
           - pipewire-jack
       - name: "hardware"
@@ -141,7 +138,6 @@
           - amd-ucode
           - dmidecode
           - dmraid
-          - dosfstools
           - hdparm
           - hwdetect
           - intel-ucode
@@ -166,7 +162,6 @@
           - eos-rankmirrors
           - eos-update-notifier
           - grub-tools
-          - keyserver-rank
           - reflector-simple
           - welcome
           - yad-eos
@@ -183,6 +178,7 @@
           - hwinfo
           - inxi
           - meld
+          - nano-syntax-highlighting
           - neofetch
           - pcurses
           - pv
