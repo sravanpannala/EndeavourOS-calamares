@@ -130,10 +130,9 @@
           - alsa-utils
           - paprefs
           - pavucontrol
-          - pipewire-pulse
-          - pipewire-media-session
-          - pipewire-alsa
-          - pipewire-jack
+          - pulseaudio
+          - pulseaudio-alsa
+          - pulseaudio-jack
       - name: "hardware"
         description: "Hardware support libs and firmware"
         selected: true
