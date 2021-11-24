@@ -158,43 +158,59 @@ _virt_remove() {
     done
 }
 
+_environment_set1() {
+    local varname="$1"
+    if [ -z "$(grep "^$varname=" /etc/environment)" ] ; then
+        _c_c_s_msg info "adding $varname=1 to /etc/environment"
+        echo "$varname=1" >> /etc/environment
+    fi
+}
+
 _sway_in_vm_settings() {
     # Settings for sway in a virtual machine
     if [ -x /usr/bin/swaybg ] ; then
         # We are using sway here (see also: eos-script-lib-yad, eos_IsSway()).
-        if [ -z "$(grep "^WLR_NO_HARDWARE_CURSORS=" /etc/environment)" ] ; then
-            echo "WLR_NO_HARDWARE_CURSORS=1" >> /etc/environment
-        fi
+        _environment_set1 WLR_NO_HARDWARE_CURSORS
+        case "$detected_vm" in
+            qemu) _environment_set1 WLR_RENDERER_ALLOW_SOFTWARE ;;
+        esac
     fi
 }
 
 _virtual_machines() {    # new implementation
-
     local pkgs_common="xf86-video-vmware"
     local pkgs_vbox="virtualbox-guest-utils"
     local pkgs_qemu="qemu-guest-agent spice-vdagent"  # xf86-video-qxl ??
     local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
+    local detected_vm="$(device-info --vm)"
 
-    case "$(device-info --vm)" in               # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
+    case "$detected_vm" in               # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
         virtualbox)
+            _c_c_s_msg info "VirtualBox VM detected."
             _virt_remove $pkgs_qemu $pkgs_vmware
             _install_needed_packages $pkgs_vbox $pkgs_common
-            _sway_in_vm_settings          # Note: sway requires enabling 3D support for the vbox virtual machine!
+            _sway_in_vm_settings           # Note: sway requires enabling 3D support for the vbox virtual machine!
             ;;
         vmware)
+            _c_c_s_msg info "VmWare VM detected."
             _virt_remove $pkgs_qemu $pkgs_vbox
             _install_needed_packages $pkgs_vmware $pkgs_common
             _sway_in_vm_settings
             ;;
         qemu)
             # common pkgs ??
+            _c_c_s_msg info "Qemu VM detected."
             _virt_remove $pkgs_vmware $pkgs_vbox $pkgs_common
             _install_needed_packages $pkgs_qemu
+            _sway_in_vm_settings
             ;;
         kvm)
-            _c_c_s_msg warning "kvm is not supported"
+            _c_c_s_msg info "Kvm VM detected."
+            _virt_remove $pkgs_vmware                                     # ???
+            _install_needed_packages $pkgs_qemu $pkgs_vbox $pkgs_common   # ???
             ;;
         *)
+            _c_c_s_msg info "VM not detected."
             _virt_remove $pkgs_vbox $pkgs_qemu $pkgs_vmware $pkgs_common
             ;;
     esac
