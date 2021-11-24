@@ -158,6 +158,16 @@ _virt_remove() {
     done
 }
 
+_sway_in_vm_settings() {
+    # Settings for sway in a virtual machine
+    if [ -x /usr/bin/swaybg ] ; then
+        # We are using sway here (see also: eos-script-lib-yad, eos_IsSway()).
+        if [ -z "$(grep "^WLR_NO_HARDWARE_CURSORS=" /etc/environment)" ] ; then
+            echo "WLR_NO_HARDWARE_CURSORS=1" >> /etc/environment
+        fi
+    fi
+}
+
 _virtual_machines() {    # new implementation
 
     local pkgs_common="xf86-video-vmware"
@@ -169,10 +179,12 @@ _virtual_machines() {    # new implementation
         virtualbox)
             _virt_remove $pkgs_qemu $pkgs_vmware
             _install_needed_packages $pkgs_vbox $pkgs_common
+            _sway_in_vm_settings          # Note: sway requires enabling 3D support for the vbox virtual machine!
             ;;
         vmware)
             _virt_remove $pkgs_qemu $pkgs_vbox
             _install_needed_packages $pkgs_vmware $pkgs_common
+            _sway_in_vm_settings
             ;;
         qemu)
             # common pkgs ??
