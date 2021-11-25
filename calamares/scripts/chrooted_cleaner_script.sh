@@ -486,10 +486,6 @@ _desktop_i3(){
     cp .nanorc /home/$NEW_USER/
     cp xed.dconf ~/
     cp xed.dconf /home/$NEW_USER/
-    cp .bashrc ~/
-    cp .bashrc /home/$NEW_USER/
-    cp .bash_profile ~/
-    cp .bash_profile /home/$NEW_USER/
     chown -R $NEW_USER:$NEW_USER /home/$NEW_USER/
     popd >/dev/null
     rm -rf endeavouros-i3wm-setup
