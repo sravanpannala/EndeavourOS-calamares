@@ -31,8 +31,6 @@ else
 fi
 
 _check_internet_connection(){
-    #ping -c 1 8.8.8.8 >& /dev/null   # ping Google's address
-    #curl --silent --connect-timeout 8 https://8.8.8.8 > /dev/null
     eos-connection-checker
 }
 
@@ -72,83 +70,11 @@ _install_needed_packages() {
     fi
 }
 
-if [ 0 -eq 1 ] ; then
 
+##################################################################
+# Virtual machine stuff.
 # For virtual machines we assume internet connection exists.
-
-_vbox(){
-    local vbox_guest_packages=(
-        virtualbox-guest-utils
-        # xf86-video-vmware       # a dependency of virtualbox-guest-utils
-    )
-
-    case "$(device-info --vm)" in           # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
-        virtualbox)
-            # If using net-install detect VBox and install the packages
-            _install_needed_packages "${vbox_guest_packages[@]}"
-            ;;
-        *)
-            local pkg
-            for pkg in "${vbox_guest_packages[@]}" ; do
-                _pkg_msg remove "$pkg"
-                pacman -Rnsdd "$pkg" --noconfirm
-            done
-            #rm -f /usr/lib/modules-load.d/virtualbox-guest-dkms.conf   # not needed anymore?
-            ;;
-    esac
-}
-
-_vmware() {
-    local vmware_guest_packages=(
-        open-vm-tools
-        xf86-input-vmmouse
-        xf86-video-vmware           # note: virtualbox-guest uses this
-    )
-    local vmname="$(device-info --vm)"
-
-    case "$vmname" in
-        vmware)
-            _install_needed_packages "${vmware_guest_packages[@]}"
-            ;;
-        *)
-            local pkg
-            for pkg in "${vmware_guest_packages[@]}" ; do
-                if [ "$pkg" = "xf86-video-vmware" ] ; then
-                    case "$vmname" in
-                        virtualbox | qemu) continue ;;                 # virtualbox needs this package! And qemu?
-                    esac
-                fi
-                _remove_a_pkg "$pkg"
-            done
-            ;;
-    esac
-}
-
-_qemu() {
-    local qemu_packages=(
-        qemu-guest-agent
-    )
-    case "$(device-info --vm)" in
-        qemu)                        # and 'kvm' ??
-            _install_needed_packages "${qemu_packages[@]}"
-            ;;
-        *)
-            local pkg
-            for pkg in "${qemu_packages[@]}" ; do
-                _pkg_msg remove "$pkg"
-                pacman -Rnsdd "$pkg" --noconfirm
-            done
-            ;;
-    esac
-}
-
-_virtual_machines() {    # old implementation
-    _vmware
-    _vbox
-    _qemu
-}
-
-else
+##################################################################
 
 _virt_remove() {
     local pkg
@@ -158,7 +84,7 @@ _virt_remove() {
     done
 }
 
-_environment_set1() {
+_vm_environment_set1() {
     local varname="$1"
     if [ -z "$(grep "^$varname=" /etc/environment)" ] ; then
         _c_c_s_msg info "adding $varname=1 to /etc/environment"
@@ -170,14 +96,14 @@ _sway_in_vm_settings() {
     # Settings for sway in a virtual machine
     if [ -x /usr/bin/swaybg ] ; then
         # We are using sway here (see also: eos-script-lib-yad, eos_IsSway()).
-        _environment_set1 WLR_NO_HARDWARE_CURSORS
+        _vm_environment_set1 WLR_NO_HARDWARE_CURSORS
         case "$detected_vm" in
-            qemu) _environment_set1 WLR_RENDERER_ALLOW_SOFTWARE ;;
+            qemu) _vm_environment_set1 WLR_RENDERER_ALLOW_SOFTWARE ;;
         esac
     fi
 }
 
-_virtual_machines() {    # new implementation
+_virtual_machines() {
     local pkgs_common="xf86-video-vmware"
     local pkgs_vbox="virtualbox-guest-utils"
     local pkgs_qemu="qemu-guest-agent spice-vdagent"  # xf86-video-qxl ??
@@ -215,32 +141,12 @@ _virtual_machines() {    # new implementation
             ;;
     esac
 }
-fi
 
 _sed_stuff(){
 
     # Journal for offline. Turn volatile (for iso) into a real system.
     sed -i 's/volatile/auto/g' /etc/systemd/journald.conf 2>>/tmp/.errlog
     sed -i 's/.*pam_wheel\.so/#&/' /etc/pam.d/su
-}
-
-_os_lsb_release(){
-
-    # Check if offline is still copying the files, sed is the way to go!
-    # same as os-release hook
-    sed -i /usr/lib/os-release \
-        -e s'|^NAME=.*$|NAME=\"EndeavourOS\"|' \
-        -e s'|^PRETTY_NAME=.*$|PRETTY_NAME=\"EndeavourOS\"|' \
-        -e s'|^HOME_URL=.*$|HOME_URL=\"https://endeavouros.com\"|' \
-        -e s'|^DOCUMENTATION_URL=.*$|DOCUMENTATION_URL=\"https://endeavouros.com/wiki/\"|' \
-        -e s'|^SUPPORT_URL=.*$|SUPPORT_URL=\"https://forum.endeavouros.com\"|' \
-        -e s'|^BUG_REPORT_URL=.*$|BUG_REPORT_URL=\"https://github.com/endeavouros-team\"|' \
-        -e s'|^LOGO=.*$|LOGO=endeavouros|'
-
-    # same as lsb-release hook
-    sed -i /etc/lsb-release \
-        -e s'|^DISTRIB_ID=.*$|DISTRIB_ID=EndeavourOS|' \
-        -e s'|^DISTRIB_DESCRIPTION=.*$|DISTRIB_DESCRIPTION=\"EndeavourOS Linux\"|'
 }
 
 _clean_archiso(){
@@ -334,38 +240,8 @@ _clean_offline_packages(){
 }
 
 _endeavouros(){
-
-
     [ -r /root/.bash_profile ] && sed -i "/if/,/fi/"'s/^/#/' /root/.bash_profile
     sed -i "/if/,/fi/"'s/^/#/' /home/$NEW_USER/.bash_profile
-
-}
-
-_fix_offline_mirrorlist() {
-    # For offline install only!
-    # If a mirrorlist could not be generated because of no connection, use the following.
-
-    /usr/bin/cat <<EOF > /etc/pacman.d/mirrorlist
-### This mirrorlist was written during install at $(date -u +%Y-%m-%d).
-###
-### Note that the mirrors were not ranked, so you may get better mirrorlist
-### by ranking with e.g. program 'reflector-simple'.
-
-## Germany
-Server = http://mirror.f4st.host/archlinux/\$repo/os/\$arch
-Server = https://mirror.f4st.host/archlinux/\$repo/os/\$arch
-
-## United States
-Server = http://arch.mirror.constant.com/\$repo/os/\$arch
-Server = https://arch.mirror.constant.com/\$repo/os/\$arch
-
-## Germany
-Server = https://mirror.pseudoform.org/\$repo/os/\$arch
-
-## United States
-Server = http://mirror.lty.me/archlinux/\$repo/os/\$arch
-Server = https://mirror.lty.me/archlinux/\$repo/os/\$arch
-EOF
 }
 
 _is_offline_mode() {
@@ -392,8 +268,6 @@ _check_install_mode(){
                 chown $NEW_USER:$NEW_USER /home/$NEW_USER/.bashrc
                 _sed_stuff
                 _clean_offline_packages
-                # _check_internet_connection && _fix_offline_mirrorlist
-                # _check_internet_connection && update-mirrorlist
             ;;
 
         ONLINE_MODE)
@@ -452,27 +326,18 @@ _remove_broadcom_wifi_driver() {
     # }
 }
 
-_remove_or_blacklist_r8168() {
-    local xx
-    if [ -n "$(lsmod | grep -Pw 'r8168|r8169')" ] || [ -n "$(lspci | grep -w Ethernet | grep -w 8168)" ] ; then
-        # keep r8168 package but blacklist it; r8169 will be used by default
-        xx=/usr/lib/modprobe.d/r8168.conf
-        if [ -r $xx ] ; then
-            _c_c_s_msg info "blacklisting r8168"
-            sed -i $xx -e 's|r8169|r8168|'
-        fi
-    else
-        _remove_a_pkg r8168
-    fi
-}
+_install_extra_drivers_to_target() {
+    # Install special drivers to target if needed.
+    # The drivers exist on the ISO and were copied to the target.
 
-_copy_extra_drivers_to_target() {
-    local dir=/opt/extra-packages
+    local dir=/opt/extra-drivers
     local pkg
 
-    # r8168 package
+    # Handle the r8168 package.
     if [ -r /tmp/r8168_in_use ] ; then
+        # We must install r8168 now.
         if _is_offline_mode ; then
+            # Install using the copied r8168 package.
             pkg="$(/usr/bin/ls -1 $dir/r8168-*-x86_64.pkg.tar.zst)"
             if [ -n "$pkg" ] ; then
                 _pkg_msg install "r8168 (offline)"
@@ -481,6 +346,7 @@ _copy_extra_drivers_to_target() {
                 _c_c_s_msg error "no r8168 package in folder $dir!"
             fi
         else
+            # Install r8168 package from the mirrors.
             _install_needed_packages r8168
         fi
     fi
@@ -576,8 +442,7 @@ _clean_up(){
     # remove broadcom-wl-dkms if it is not needed
     _remove_broadcom_wifi_driver
 
-    # _remove_or_blacklist_r8168
-    _copy_extra_drivers_to_target
+    _install_extra_drivers_to_target
 
     _misc_cleanups
 
@@ -697,7 +562,6 @@ _run_hotfix_end() {
 
 _check_install_mode
 _endeavouros
-#_os_lsb_release
 _virtual_machines
 _change_config_options
 #_remove_gnome_software
