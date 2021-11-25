@@ -170,7 +170,7 @@ Main() {
                 ;;
             *)
                 # Should create a reasonably good mirrorlist generally
-                cmd="/usr/bin/rate-mirrors --allow-root arch"
+                cmd="/usr/bin/rate-mirrors arch"
                 ;;
         esac
     else
