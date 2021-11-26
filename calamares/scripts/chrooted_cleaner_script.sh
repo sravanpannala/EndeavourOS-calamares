@@ -104,11 +104,13 @@ _sway_in_vm_settings() {
 }
 
 _virtual_machines() {
+    local detected_vm="$1"
     local pkgs_common="xf86-video-vmware"
     local pkgs_vbox="virtualbox-guest-utils"
     local pkgs_qemu="qemu-guest-agent spice-vdagent"  # xf86-video-qxl ??
     local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
-    local detected_vm="$(device-info --vm)"
+
+    [ -n "$detected_vm" ] || detected_vm="$(device-info --vm)"
 
     case "$detected_vm" in               # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
         virtualbox)
@@ -132,8 +134,12 @@ _virtual_machines() {
             ;;
         kvm)
             _c_c_s_msg info "Kvm VM detected."
-            _virt_remove $pkgs_vmware                                     # ???
-            _install_needed_packages $pkgs_qemu $pkgs_vbox $pkgs_common   # ???
+            if [ -n "$(lspci -vnn | grep -iw "qemu virtual machine")" ] ; then
+                $FUNCNAME qemu
+            else
+                _install_needed_packages $pkgs_qemu $pkgs_vbox $pkgs_common   # ???
+                _sway_in_vm_settings
+            fi
             ;;
         *)
             _c_c_s_msg info "VM not detected."
