@@ -498,7 +498,7 @@ _desktop_i3(){
 }
 
 _de_wm_config(){
-    local desktops_lowercase="$(ls -1 /usr/share/xsessions/*.desktop | tr '[:upper:]' '[:lower:]' | sed -e 's|\.desktop$||' -e 's|^/usr/share/xsessions/||')"
+    local desktops_lowercase="$(ls -1 /usr/share/xsessions/*.desktop 2>/dev/null | tr '[:upper:]' '[:lower:]' | sed -e 's|\.desktop$||' -e 's|^/usr/share/xsessions/||')"
     local desktop
     local i3_added=no # break for loop
 
