@@ -107,7 +107,7 @@ _virtual_machines() {
     local detected_vm="$1"
     local pkgs_common="xf86-video-vmware"
     local pkgs_vbox="virtualbox-guest-utils"
-    local pkgs_qemu="qemu-guest-agent spice-vdagent"  # xf86-video-qxl ??
+    local pkgs_qemu="qemu-guest-agent"
     local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
 
     [ -n "$detected_vm" ] || detected_vm="$(device-info --vm)"
