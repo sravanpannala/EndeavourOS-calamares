@@ -183,6 +183,7 @@
           - pcurses
           - pv
           - python-defusedxml
+          - python-packaging
           - rsync
           - tldr
           - sed
