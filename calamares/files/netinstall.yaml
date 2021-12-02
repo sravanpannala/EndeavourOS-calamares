@@ -483,7 +483,6 @@
     - gvfs
     - gvfs-mtp
     - kio-fuse
-    - libpulse
     - libstatgrab
     - libsysstat
     - lm_sensors
