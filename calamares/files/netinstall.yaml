@@ -125,7 +125,6 @@
           - alsa-firmware
           - alsa-plugins
           - alsa-utils
-          - paprefs
           - pavucontrol
           - pipewire-pulse
           - pipewire-media-session
