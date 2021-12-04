@@ -79,6 +79,7 @@ DIE() {
 }
 
 UseBestMirrorsIfAvailable() {
+    [ -n "$this_country" ] || return
     # ad hoc mirror "ranking"
     declare -A BEST_MIRRORS     # mirrors here will be the *first* mirrors
 
@@ -224,7 +225,7 @@ Main() {
     fi
 
     rm -f $tf
-    return $retval   # 0=OK, other is FAIL
+    # return $retval   # 0=OK, other is FAIL
 }
 
 Main "$@"
