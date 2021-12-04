@@ -107,6 +107,7 @@ UseBestMirrorsIfAvailable() {
 RunCmd() {
     $cmd > $tf
     retval=$?
+    [ $retval -ne 0 ] || return
 
     UseBestMirrorsIfAvailable
 
@@ -140,11 +141,15 @@ Main() {
         fi
     fi
 
-    REFLECTOR_COUNTRIES="$(reflector --list-countries)"
+    REFLECTOR_COUNTRIES="$(reflector --list-countries --connection-timeout 20 --download-timeout 20)"
+    if [ -z "$REFLECTOR_COUNTRIES" ] ; then
+        logterminal "no result from command 'reflector --listcountries', mirrorlist not updated."
+        return
+    fi
     local this_country="$(GetYourCountryCode)"
     local retval
-    local tf=$(mktemp)
-    local cmd="reflector -phttps --latest 10 --sort rate "  # reflector and common options
+    local cmd=""
+    local ranker="reflector"   # rate-mirrors or reflector
     local dryrun=no
     local arg
 
@@ -167,15 +172,17 @@ Main() {
         case "$this_country" in
             FI)
                 # Some other European countries (e.g. DE) could use this command as well!
-                cmd="/usr/bin/reflector -phttps -l5 -cDE --sort rate --threads 5"
+                cmd="$ranker -phttps -l5 -cDE --sort rate --threads 5"
                 ;;
             *)
-                # Should create a reasonably good mirrorlist generally
-                cmd="/usr/bin/rate-mirrors --allow-root arch"
+                # rate-mirrors should create a reasonably good mirrorlist generally
+                ranker="rate-mirrors"
+                cmd="$ranker --allow-root arch"
                 ;;
         esac
     else
         # old implementation (before 2021-06-27)
+        cmd="$ranker -phttps --latest 10 --sort rate "  # reflector and common options
         case "$this_country" in
             "" | IS | IE)
                 # no mirrors or mirror problems here, search well-updated https mirrors globally
@@ -202,6 +209,8 @@ Main() {
         esac
     fi
 
+    local tf=$(mktemp)
+
     logterminal "command: $cmd"
     logterminal "please wait..."
     logterminal "" --nh
@@ -221,11 +230,11 @@ Main() {
             logterminal "you used option --dryrun, will not write file $mf"
         fi
     else
-        logterminal "reflector returned error code $retval, mirrorlist not updated."
+        logterminal "$ranker returned error code $retval, mirrorlist not updated."
     fi
 
     rm -f $tf
-    # return $retval   # 0=OK, other is FAIL
+    return 0            # return $retval   # 0=OK, other is FAIL
 }
 
 Main "$@"
