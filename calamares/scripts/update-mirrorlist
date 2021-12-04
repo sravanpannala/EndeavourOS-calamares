@@ -219,7 +219,7 @@ Main() {
     logterminal "" --nh
 
     if [ $retval -eq 0 ] ; then
-        logterminal "Arch mirrorlist by reflector:"
+        logterminal "Arch mirrorlist by $ranker:"
         logterminal "" --nh
         logterminal "$(cat $tf)" --nh
         logterminal "" --nh
