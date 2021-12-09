@@ -509,13 +509,13 @@
     - lxde-icon-theme
     - lxhotkey
     - lxinput
-    - lxlauncher 	
-    - lxmusic 	
+    - lxlauncher
+    - lxmusic
     - lxpanel
     - lxrandr
     - lxsession
     - lxtask
-    - lxterminal	
+    - lxterminal
     - openbox
     - file-roller
     - galculator
@@ -530,7 +530,7 @@
     - pcmanfm
     - xdg-user-dirs-gtk
     - xed
-    - celluloid  
+    - celluloid
 - name: "Printing-Support"
   description: "Support for printing (Cups)"
   hidden: false
