@@ -502,11 +502,22 @@
   selected: false
   critical: true
   packages:
+    - celluloid
+    - file-roller
+    - galculator
     - gpicview
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
     - lxappearance
     - lxappearance-obconf
     - lxde-common
     - lxde-icon-theme
+    - lxdm
     - lxhotkey
     - lxinput
     - lxlauncher
@@ -517,20 +528,10 @@
     - lxtask
     - lxterminal
     - openbox
-    - file-roller
-    - galculator
-    - gvfs
-    - gvfs-afc
-    - gvfs-gphoto2
-    - gvfs-mtp
-    - gvfs-nfs
-    - gvfs-smb
-    - lightdm
-    - lxdm
     - pcmanfm
     - xdg-user-dirs-gtk
     - xed
-    - celluloid
+    - xrandr
 - name: "Printing-Support"
   description: "Support for printing (Cups)"
   hidden: false
