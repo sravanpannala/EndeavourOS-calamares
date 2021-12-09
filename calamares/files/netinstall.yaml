@@ -517,11 +517,6 @@
     - lxtask
     - lxterminal	
     - openbox
-    - arc-gtk-theme-eos
-    - arc-x-icons-theme
-    - capitaine-cursors
-    - endeavouros-skel-xfce4
-    - endeavouros-xfce4-terminal-colors
     - file-roller
     - galculator
     - gvfs
@@ -531,8 +526,7 @@
     - gvfs-nfs
     - gvfs-smb
     - lightdm
-    - lightdm-slick-greeter
-    - network-manager-applet
+    - lxdm
     - pcmanfm
     - xdg-user-dirs-gtk
     - xed
