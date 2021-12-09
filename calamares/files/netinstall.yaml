@@ -533,7 +533,6 @@
     - pcmanfm
     - xdg-user-dirs-gtk
     - xed
-    - xrandr
 - name: "Printing-Support"
   description: "Support for printing (Cups)"
   hidden: false
