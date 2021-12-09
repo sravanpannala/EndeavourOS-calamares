@@ -515,11 +515,11 @@
     - gvfs-nfs
     - gvfs-smb
     - lightdm
+    - lightdm-slick-greeter
     - lxappearance
     - lxappearance-obconf
     - lxde-common
     - lxde-icon-theme
-    - lxdm
     - lxhotkey
     - lxinput
     - lxlauncher
