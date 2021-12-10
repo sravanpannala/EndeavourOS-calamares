@@ -468,6 +468,7 @@ _clean_up(){
     # on the target, select file server based on country
     xx=/usr/bin/eos-select-file-server
     if [ -x $xx ] ; then
+        _c_c_s_msg info "running $xx"
         local fileserver="$($xx)"
         if [ "$fileserver" != "gitlab" ] ; then
             _c_c_s_msg info "file server configured to '$fileserver'"
