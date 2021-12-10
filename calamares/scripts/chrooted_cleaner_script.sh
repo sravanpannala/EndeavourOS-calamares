@@ -457,6 +457,17 @@ _clean_up(){
         _remove_a_pkg dex
     fi
 
+    # on the target, select file server based on country
+    xx=/usr/bin/eos-select-file-server
+    if [ -x $xx ] ; then
+        local fileserver="$($xx)"
+        if [ "$fileserver" != "gitlab" ] ; then
+            _c_c_s_msg info "file server configured to '$fileserver'"
+        fi
+    else
+        _c_c_s_msg warning "program $xx was not found"
+    fi
+
     # enable TRIM systemd service
     # systemctl enable fstrim.timer # testing calamares services-systemd module calamares 3.2.45 update
 
