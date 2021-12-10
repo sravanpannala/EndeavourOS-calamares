@@ -314,7 +314,7 @@ _remove_other_graphics_drivers() {
     fi
 }
 
-_remove_broadcom_wifi_driver() {
+_remove_broadcom_wifi_driver_old() {
     local pkgname=broadcom-wl-dkms
     local wifi_pci
     local wifi_driver
@@ -330,6 +330,14 @@ _remove_broadcom_wifi_driver() {
         fi
         _remove_a_pkg $pkgname
     # }
+}
+
+_remove_broadcom_wifi_driver() {
+    local pkgname=broadcom-wl-dkms
+    local file=/tmp/$pkgname.txt
+    if [ "$(cat $file 2>/dev/null)" = "no" ] ; then
+        _remove_a_pkg $pkgname
+    fi
 }
 
 _install_extra_drivers_to_target() {

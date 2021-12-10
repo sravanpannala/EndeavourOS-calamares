@@ -61,6 +61,21 @@ _CopyFileToTarget() {
     cp "$file" "$targetdir"
 }
 
+_manage_broadcom_wifi_driver() {
+    local pkgname=broadcom-wl-dkms
+    local targetfile=/tmp/$chroot_path/tmp/$pkgname.txt
+    local wifi_pci="$(lspci -k | sed -n '/ Network controller: /,/^[^ \t]/p' | sed '$d')"
+
+    if [ -n "$(echo "$wifi_pci" | grep -w Broadcom)" ] ; then
+        echo "yes" > $targetfile
+    elif [ -n "$(lsusb | grep -w Broadcom)" ] ; then
+        echo "yes" > $targetfile
+    else
+        echo "no" > $targetfile
+    fi
+}
+
+
 _copy_files(){
     local config_file
     local target=/tmp/$chroot_path            # $target refers to the / folder of the installed system
@@ -133,6 +148,8 @@ _copy_files(){
         _cleaner_msg info "detected usage of r8168 driver"
         touch $target/tmp/r8168_in_use
     fi
+
+    _manage_broadcom_wifi_driver
 
     # copy endeavouros-release file
     local file=/usr/lib/endeavouros-release
