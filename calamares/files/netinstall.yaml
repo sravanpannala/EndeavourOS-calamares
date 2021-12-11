@@ -148,7 +148,7 @@
         description: "Powermanagement support"
         selected: true
         packages:
-          - tlp
+          - power-profiles-daemon
           - upower
       - name: "EndeavourOS Apps"
         description: "EndeavourOS tools and applications"
