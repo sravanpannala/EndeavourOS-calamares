@@ -314,7 +314,7 @@ _remove_other_graphics_drivers() {
     fi
 }
 
-_remove_broadcom_wifi_driver() {
+_remove_broadcom_wifi_driver_old() {
     local pkgname=broadcom-wl-dkms
     local wifi_pci
     local wifi_driver
@@ -330,6 +330,14 @@ _remove_broadcom_wifi_driver() {
         fi
         _remove_a_pkg $pkgname
     # }
+}
+
+_remove_broadcom_wifi_driver() {
+    local pkgname=broadcom-wl-dkms
+    local file=/tmp/$pkgname.txt
+    if [ "$(cat $file 2>/dev/null)" = "no" ] ; then
+        _remove_a_pkg $pkgname
+    fi
 }
 
 _install_extra_drivers_to_target() {
@@ -455,6 +463,18 @@ _clean_up(){
     # if both Xfce and i3 are installed, remove dex package
     if [ -r /usr/share/xsessions/xfce.desktop ] && [ -r /usr/share/xsessions/i3.desktop ] ; then
         _remove_a_pkg dex
+    fi
+
+    # on the target, select file server based on country
+    xx=/usr/bin/eos-select-file-server
+    if [ -x $xx ] ; then
+        _c_c_s_msg info "running $xx"
+        local fileserver="$($xx)"
+        if [ "$fileserver" != "gitlab" ] ; then
+            _c_c_s_msg info "file server configured to '$fileserver'"
+        fi
+    else
+        _c_c_s_msg warning "program $xx was not found"
     fi
 
     # enable TRIM systemd service
