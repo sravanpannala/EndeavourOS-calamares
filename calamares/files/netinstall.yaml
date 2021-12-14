@@ -498,6 +498,44 @@
     - xdg-utils
     - xscreensaver
     - xsettingsd
+- name: "LXDE-Desktop"
+  description: "The Lightweight Desktop Environment."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - arc-gtk-theme-eos
+    - arc-x-icons-theme
+    - celluloid
+    - file-roller
+    - galculator
+    - gpicview
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-slick-greeter
+    - lxappearance
+    - lxappearance-obconf
+    - lxde-common
+    - lxde-icon-theme
+    - lxhotkey
+    - lxinput
+    - lxlauncher
+    - lxmusic
+    - lxpanel
+    - lxrandr
+    - lxsession
+    - lxtask
+    - lxterminal
+    - network-manager-applet
+    - openbox
+    - pcmanfm
+    - xdg-user-dirs-gtk
+    - xed
 - name: "Printing-Support"
   description: "Support for printing (Cups)"
   hidden: false
