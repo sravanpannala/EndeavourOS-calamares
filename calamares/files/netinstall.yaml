@@ -302,6 +302,7 @@
     - file-roller
     - gdm
     - gedit
+    - gnome-calculator
     - gnome-control-center
     - gnome-disk-utility
     - gnome-keyring
