@@ -106,6 +106,7 @@ _sway_in_vm_settings() {
 _virtual_machines() {
     local detected_vm="$1"
     local pkgs_common="xf86-video-vmware"
+    local pkgs_remove_from_vm="power-profiles-daemon"
     local pkgs_vbox="virtualbox-guest-utils"
     local pkgs_qemu="qemu-guest-agent"
     local pkgs_vmware="open-vm-tools xf86-input-vmmouse"
@@ -115,20 +116,20 @@ _virtual_machines() {
     case "$detected_vm" in               # 2021-Sep-30: device-info may output one of: "virtualbox", "qemu", "kvm", "vmware" or ""
         virtualbox)
             _c_c_s_msg info "VirtualBox VM detected."
-            _virt_remove $pkgs_qemu $pkgs_vmware
+            _virt_remove $pkgs_qemu $pkgs_vmware $pkgs_remove_from_vm
             _install_needed_packages $pkgs_vbox $pkgs_common
             _sway_in_vm_settings           # Note: sway requires enabling 3D support for the vbox virtual machine!
             ;;
         vmware)
             _c_c_s_msg info "VmWare VM detected."
-            _virt_remove $pkgs_qemu $pkgs_vbox
+            _virt_remove $pkgs_qemu $pkgs_vbox $pkgs_remove_from_vm
             _install_needed_packages $pkgs_vmware $pkgs_common
             _sway_in_vm_settings
             ;;
         qemu)
             # common pkgs ??
             _c_c_s_msg info "Qemu VM detected."
-            _virt_remove $pkgs_vmware $pkgs_vbox $pkgs_common
+            _virt_remove $pkgs_vmware $pkgs_vbox $pkgs_common $pkgs_remove_from_vm
             _install_needed_packages $pkgs_qemu
             _sway_in_vm_settings
             ;;
@@ -137,6 +138,7 @@ _virtual_machines() {
             if [ -n "$(lspci -vnn | grep -iw "qemu virtual machine")" ] ; then
                 $FUNCNAME qemu
             else
+                 _virt_remove $pkgs_remove_from_vm
                 _install_needed_packages $pkgs_qemu $pkgs_vbox $pkgs_common   # ???
                 _sway_in_vm_settings
             fi
