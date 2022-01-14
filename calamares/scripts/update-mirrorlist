@@ -133,10 +133,14 @@ Main() {
     if [ -r $mf ] && [ -r $bu ] ; then
         if (/usr/bin/diff $mf $bu >& /dev/null) ; then
             # Current and original mirrorlists are the same, so carry on.
-            logterminal "updating mirrorlist."
+            logterminal "Updating mirrorlist."
         else
             # Current and original mirrorlist are different, so stop.
-            logterminal "mirrorlist already changed, not updating it."
+            logterminal "Mirrorlist already changed, not updating it."
+            logterminal "This is the current mirrorlist:"
+            echo "#===================================#"
+            cat "$mf"
+            echo "#===================================#"
             return
         fi
     fi
