@@ -29,6 +29,10 @@ def pretty_status_message():
 
 
 def line_cb(line):
+    """
+    Writes every line to the debug log and displays it in calamares
+    :param line: The line of output text from the command
+    """
     global custom_status_message
     custom_status_message = line.strip()
     libcalamares.utils.debug(line)
@@ -66,7 +70,7 @@ def run():
     try:
         libcalamares.utils.host_env_process_output(pacstrap_command, line_cb)
     except subprocess.CalledProcessError as cpe:
-        return "Failed to run pacstrap", "Pacstrap failed with error {!s}".format(cpe.output)
+        return "Failed to run pacstrap", "Pacstrap failed with error {!s}".format(cpe.stderr)
 
     # copy files post install
     if "postInstallFiles" in libcalamares.job.configuration:
