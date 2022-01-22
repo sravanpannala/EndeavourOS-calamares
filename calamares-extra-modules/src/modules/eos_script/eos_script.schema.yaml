@@ -10,3 +10,4 @@ properties:
     includeRoot: { type: boolean, default: false }
     includeUser: { type: boolean, default: false }
     isOnline: { type: boolean, default: false }
+    userOutput: { type: boolean, default: false }

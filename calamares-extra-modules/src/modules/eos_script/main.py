@@ -18,6 +18,7 @@ _n = _translation.ngettext
 
 custom_status_message = None
 name = "Run script"
+user_output = False
 
 
 def pretty_name():
@@ -34,8 +35,9 @@ def line_cb(line):
     Writes every line to the debug log and displays it in calamares
     :param line: The line of output text from the command
     """
-    global custom_status_message
-    custom_status_message = line.strip()
+    if user_output:
+        global custom_status_message
+        custom_status_message = line.strip()
     libcalamares.utils.debug(line)
 
 
@@ -61,11 +63,15 @@ def run():
     run_in_target = libcalamares.job.configuration.get("runInTarget", False)
     include_root = libcalamares.job.configuration.get("includeRoot", False)
     include_user = libcalamares.job.configuration.get("includeUser", False)
+    global user_output
+    user_output = libcalamares.job.configuration.get("userOutput", False)
 
     # build the paramater list
     command = [script_path]
     if online:
-        command.append("--online")
+        gs_online = libcalamares.globalstorage.value("online")
+        if gs_online is True:
+            command.append("--online")
 
     if include_root:
         root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
@@ -80,7 +86,7 @@ def run():
                     "globalstorage[\"rootMountPoint\"] is \"{}\", which does not "
                     "exist, doing nothing".format(root_mount_point))
 
-        command.append("--root_path=" + root_mount_point)
+        command.append("--root=" + root_mount_point)
 
     if include_user:
         user = libcalamares.globalstorage.value("username")

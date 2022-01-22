@@ -83,4 +83,6 @@ def run():
                 except Exception as e:
                     libcalamares.utils.warning("Failed to copy file {!s}, error {!s}".format(source_file, e))
 
+    libcalamares.globalstorage.insert("online", True)
+
     return None
