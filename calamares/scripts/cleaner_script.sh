@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Made by fernandomaroto for EndeavourOS and Portergos
 # Adapted from AIS. An excellent bit of code!
 # ISO-NEXT specific cleanup removals and additions (08-2021) @killajoe and @manuel
-
+# 01-2022 passing in root path and username as params - @dalto
 
 _cleaner_msg() {            # use this to provide all user messages (info, warning, error, ...)
     local type="$1"
@@ -11,23 +11,29 @@ _cleaner_msg() {            # use this to provide all user messages (info, warni
     echo "==> $type: $msg"
 }
 
+# parse the options
+for i in "$@"; do
+    case $i in
+        --root=*)
+            ROOT_PATH="${i#*=}"
+            shift
+        ;;
+        --user=*)
+            NEW_USER="${i#*=}"
+            shift
+        ;;
+    esac
+done
+
 if [ -f /tmp/chrootpath.txt ]
-then 
-    chroot_path=$(cat /tmp/chrootpath.txt |sed 's/\/tmp\///')
-else 
+then
+    chroot_path=$(echo ${ROOT_PATH} |sed 's/\/tmp\///')
+else
     chroot_path=$(lsblk |grep "calamares-root" |awk '{ print $NF }' |sed -e 's/\/tmp\///' -e 's/\/.*$//' |tail -n1)
 fi
 
 if [ -z "$chroot_path" ] ; then
     _cleaner_msg "Fatal error" "cleaner_script.sh: chroot_path is empty!"
-fi
-
-if [ -f /tmp/new_username.txt ]
-then
-    NEW_USER=$(cat /tmp/new_username.txt)
-else
-    #NEW_USER=$(compgen -u |tail -n -1)
-    NEW_USER=$(cat /tmp/$chroot_path/etc/passwd | grep "/home" |cut -d: -f1 |head -1)
 fi
 
 arch_chroot(){

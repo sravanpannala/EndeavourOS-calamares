@@ -1,10 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # New version of cleaner_script
 # Made by @fernandomaroto and @manuel 
 # Any failed command will just be skipped, error message may pop up but won't crash the install process
 # Net-install creates the file /tmp/run_once in live environment (need to be transfered to installed system) so it can be used to detect install option
 # ISO-NEXT specific cleanup removals and additions (08-2021) @killajoe and @manuel
+# 01-2022 passing in online and username as params - @dalto
 
 _c_c_s_msg() {            # use this to provide all user messages (info, warning, error, ...)
     local type="$1"
@@ -22,13 +23,20 @@ _pkg_msg() {            # use this to provide all package management messages (i
     echo "==> $type $pkgs"
 }
 
-if [ -f /tmp/new_username.txt ]
-then
-    NEW_USER=$(cat /tmp/new_username.txt)
-else
-    #NEW_USER=$(compgen -u |tail -n -1)
-    NEW_USER=$(cat /tmp/$chroot_path/etc/passwd | grep "/home" |cut -d: -f1 |head -1)
-fi
+# parse the options
+for i in "$@"; do
+    case $i in
+        --user=*)
+            NEW_USER="${i#*=}"
+            shift
+        ;;
+        --online)
+            INSTALL_TYPE="online"
+            shift
+        ;;
+    esac
+done
+
 
 _check_internet_connection(){
     eos-connection-checker
@@ -253,7 +261,7 @@ _endeavouros(){
 }
 
 _is_offline_mode() {
-    if [ -f /tmp/run_once ] ; then
+    if [ ${INSTALL_TYPE} = "online" ] ; then
         return 1           # online install mode
     else
         return 0           # offline install mode
