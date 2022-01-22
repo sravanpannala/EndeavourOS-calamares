@@ -65,7 +65,7 @@ def run():
 
     # run the pacstrap
     package_list = " ".join(base_packages)
-    pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", package_list]
+    pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", root_mount_point, package_list]
 
     try:
         libcalamares.utils.host_env_process_output(pacstrap_command, line_cb)
