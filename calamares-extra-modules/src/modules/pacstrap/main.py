@@ -1,33 +1,92 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
-# Simple
-# Just run the script, no aditional config
-
+import os
 import subprocess
-import libcalamares
+import shutil
 
-root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
+import libcalamares
+from libcalamares.utils import gettext_path, gettext_languages
+
+import gettext
+
+_translation = gettext.translation("calamares-python",
+                                   localedir=gettext_path(),
+                                   languages=gettext_languages(),
+                                   fallback=True)
+_ = _translation.gettext
+_n = _translation.ngettext
+
+custom_status_message = None
+
+
+def pretty_name():
+    return _("Install base system")
+
+
+def pretty_status_message():
+    if custom_status_message is not None:
+        return custom_status_message
+
+
+def line_cb(line):
+    """
+    Writes every line to the debug log and displays it in calamares
+    :param line: The line of output text from the command
+    """
+    global custom_status_message
+    custom_status_message = line.strip()
+    libcalamares.utils.debug("pacstrap: " + line)
+    libcalamares.job.setprogress(0)
+
 
 def run():
     """
-    Installing base system. Please be patient!
+    Installs the base system packages and copies files post-installation
+
     """
-    
-# To use as bash script need to get root path file before get_root_username
-    try:
-     subprocess.call(['rm', '/tmp/chrootpath.txt'])
-     with open('/tmp/chrootpath.txt', 'w') as file:
-      root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
-      file.write(root_mount_point)
-      file.close()
-    except:
-     pass # doing nothing on exception
+    root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
 
-    SCRIPT_PATH = "/usr/lib/calamares/modules/pacstrap/base_install.sh"
+    if not root_mount_point:
+        return ("No mount point for root partition in globalstorage",
+                "globalstorage does not contain a \"rootMountPoint\" key, "
+                "doing nothing")
 
-#cleaner_script.sh"
-    
+    if not os.path.exists(root_mount_point):
+        return ("Bad mount point for root partition in globalstorage",
+                "globalstorage[\"rootMountPoint\"] is \"{}\", which does not "
+                "exist, doing nothing".format(root_mount_point))
+
+    if libcalamares.job.configuration:
+        if "basePackages" in libcalamares.job.configuration:
+            base_packages = libcalamares.job.configuration["basePackages"]
+        else:
+            return "Package List Missing", "Cannot continue without list of packages to install"
+    else:
+        return "No configuration found", "Aborting due to missing configuration"
+
+    # run the pacstrap
+    pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", root_mount_point] + base_packages
+
     try:
-        subprocess.call([SCRIPT_PATH])
-    except:
-        pass
+        libcalamares.utils.host_env_process_output(pacstrap_command, line_cb)
+    except subprocess.CalledProcessError as cpe:
+        return "Failed to run pacstrap", "Pacstrap failed with error {!s}".format(cpe.stderr)
+
+    # copy files post install
+    if "postInstallFiles" in libcalamares.job.configuration:
+        files_to_copy = libcalamares.job.configuration["postInstallFiles"]
+        for source_file in files_to_copy:
+            if os.path.exists(source_file):
+                try:
+                    libcalamares.utils.debug("Copying file {!s}".format(source_file))
+                    dest = os.path.normpath(root_mount_point + source_file)
+                    os.makedirs(os.path.dirname(dest), exist_ok=True)
+                    shutil.copy2(source_file, dest)
+                except Exception as e:
+                    libcalamares.utils.warning("Failed to copy file {!s}, error {!s}".format(source_file, e))
+
+    libcalamares.globalstorage.insert("online", True)
+
+    libcalamares.job.setprogress(1.0)
+
+    return None

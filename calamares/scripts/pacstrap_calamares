@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# auto mount removed since calamares already does the job, pacstrap get error "/proc already mounted" for example.
+# auto mount removed since calamares already does the job, pacstrap-old get error "/proc already mounted" for example.
 
 #
 # Assumptions:
