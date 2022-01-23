@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
+import shutil
 
 import libcalamares
-import subprocess
-from libcalamares.utils import check_target_env_call, target_env_call
 from libcalamares.utils import *
+
 
 def run():
     """ Copy kernel and install scripts to target system.
@@ -12,35 +13,32 @@ def run():
     :return:
     """
 
+    kernel_path = "/run/archiso/bootmnt/arch/boot/x86_64/"
+    kernel_root = "vmlinuz"
+
     root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
+    if not root_mount_point:
+        return ("No mount point for root partition in globalstorage",
+                "globalstorage does not contain a \"rootMountPoint\" key, "
+                "doing nothing")
 
-    # Copy kernels
-    try:
-     subprocess.check_call(["cp", "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz", root_mount_point + "/boot/vmlinuz-linux"])
-    except:
-     pass # doing nothing on exception
-    try:
-     subprocess.check_call(["cp", "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz-lts", root_mount_point + "/boot/vmlinuz-linux-lts"])
-    except:
-     pass # doing nothing on exception
-    # New archiso kernel names
-    try:
-     subprocess.check_call(["cp", "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz-linux", root_mount_point + "/boot/vmlinuz-linux"])
-    except:
-     pass # doing nothing on exception
-    try:
-     subprocess.check_call(["cp", "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz-linux-lts", root_mount_point + "/boot/vmlinuz-linux"])
-    except:
-     pass # doing nothing on exception
+    if not os.path.exists(root_mount_point):
+        return ("Bad mount point for root partition in globalstorage",
+                "globalstorage[\"rootMountPoint\"] is \"{}\", which does not "
+                "exist, doing nothing".format(root_mount_point))
 
-    # Copy cleaner script for install process
     try:
-     subprocess.check_call(["cp", "-f", "/usr/bin/cleaner_script.sh", root_mount_point + "/usr/bin"])
-    except:
-     pass # doing nothing on exception
-    try:
-     subprocess.check_call(["cp", "-f", "/usr/bin/chrooted_cleaner_script.sh", root_mount_point + "/usr/bin"])
-    except:
-     pass # doing nothing on exception
+        # Copy any kernels
+        for file in os.listdir(kernel_path):
+            if file.strip(kernel_root):
+                shutil.copy2(file, os.path.join(root_mount_point, "boot", os.path.basename(file)))
+
+        # Copy cleaner script
+        source = "/usr/bin/chrooted_cleaner_script.sh"
+        dest = os.path.join(root_mount_point + "etc/calamares/scripts" + "chrooted_cleaner_script.sh")
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        shutil.copy2(source, dest)
+    except Exception as e:
+        return "File copy failed", "kernel-copy failed to copy file with error " + format(e)
 
     return None
