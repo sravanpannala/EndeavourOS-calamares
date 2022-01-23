@@ -35,7 +35,8 @@ def line_cb(line):
     """
     global custom_status_message
     custom_status_message = line.strip()
-    libcalamares.utils.debug(line)
+    libcalamares.utils.debug("pacstrap: " + line)
+    libcalamares.job.setprogress(0)
 
 
 def run():
@@ -64,8 +65,7 @@ def run():
         return "No configuration found", "Aborting due to missing configuration"
 
     # run the pacstrap
-    package_list = " ".join(base_packages)
-    pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", root_mount_point, package_list]
+    pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", root_mount_point] + base_packages
 
     try:
         libcalamares.utils.host_env_process_output(pacstrap_command, line_cb)
@@ -84,5 +84,7 @@ def run():
                     libcalamares.utils.warning("Failed to copy file {!s}, error {!s}".format(source_file, e))
 
     libcalamares.globalstorage.insert("online", True)
+
+    libcalamares.job.setprogress(1.0)
 
     return None
