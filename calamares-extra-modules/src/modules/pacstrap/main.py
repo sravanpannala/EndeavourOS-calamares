@@ -79,7 +79,7 @@ def run():
             if os.path.exists(source_file):
                 try:
                     libcalamares.utils.debug("Copying file {!s}".format(source_file))
-                    shutil.copy2(source_file, os.path.join(root_mount_point, source_file))
+                    shutil.copy2(source_file, os.path.normpath(root_mount_point + source_file))
                 except Exception as e:
                     libcalamares.utils.warning("Failed to copy file {!s}, error {!s}".format(source_file, e))
 
