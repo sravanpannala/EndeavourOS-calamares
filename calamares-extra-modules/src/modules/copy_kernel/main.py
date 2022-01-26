@@ -34,7 +34,7 @@ def run():
                 shutil.copy2(file, os.path.join(root_mount_point, "boot", os.path.basename(file)))
 
         # Copy cleaner script
-        source = "/etc/calamares/scriptschrooted_cleaner_script.sh"
+        source = "/etc/calamares/scripts/chrooted_cleaner_script.sh"
         dest = os.path.join(root_mount_point + "etc/calamares/scripts" + "chrooted_cleaner_script.sh")
         os.makedirs(os.path.dirname(dest), exist_ok=True)
         shutil.copy2(source, dest)
