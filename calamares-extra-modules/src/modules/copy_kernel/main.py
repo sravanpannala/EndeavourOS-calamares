@@ -30,7 +30,7 @@ def run():
     try:
         # Copy any kernels
         for file in os.listdir(kernel_path):
-            if file.strip(kernel_root):
+            if file.startswith(kernel_root):
                 shutil.copy2(file, os.path.join(root_mount_point, "boot", os.path.basename(file)))
 
         # Copy cleaner script
