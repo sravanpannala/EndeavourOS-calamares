@@ -46,7 +46,7 @@ arch_chroot(){
 # Copy any file from live environment to new system
 
 cp -f /etc/skel/.bashrc /tmp/$chroot_path/home/$NEW_USER/.bashrc
-cp -f /etc/environment /tmp/$chroot_path/etc/environment
+cp -f /etc/calamares/files/environment /tmp/$chroot_path/etc/environment
 #cp -rf /home/liveuser/.gnupg/gpg.conf /tmp/$chroot_path/etc/pacman.d/gnupg/gpg.conf
 
 _CopyFileToTarget() {
