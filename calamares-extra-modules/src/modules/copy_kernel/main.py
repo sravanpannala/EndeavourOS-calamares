@@ -15,6 +15,7 @@ def run():
 
     kernel_path = "/run/archiso/bootmnt/arch/boot/x86_64/"
     kernel_root = "vmlinuz"
+    ucode_tail = "ucode.img"
 
     root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
     if not root_mount_point:
@@ -28,16 +29,10 @@ def run():
                 "exist, doing nothing".format(root_mount_point))
 
     try:
-        # Copy any kernels
+        # Copy any kernels and ucode available to /boot in the target
         for file in os.listdir(kernel_path):
-            if file.startswith(kernel_root):
+            if file.startswith(kernel_root) or file.endswith(ucode_tail):
                 shutil.copy2(file, os.path.join(root_mount_point, "boot", os.path.basename(file)))
-
-        # Copy cleaner script
-        source = "/etc/calamares/scripts/chrooted_cleaner_script.sh"
-        dest = os.path.join(root_mount_point + "etc/calamares/scripts" + "chrooted_cleaner_script.sh")
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
-        shutil.copy2(source, dest)
     except Exception as e:
         return "File copy failed", "kernel-copy failed to copy file with error " + format(e)
 
