@@ -41,7 +41,11 @@ def run():
 
         # Turn the packages list into a structure suitable for netinstall and load it into global storage
         if packages:
-            netinstall_data = get_netinstall_data(packages)
-            libcalamares.globalstorage.insert("netinstallAdd", [netinstall_data])
+            netinstall_data = [get_netinstall_data(packages)]
+
+            # check and see if netinstallAdd data is already in global storage.  If it is, combine them
+            if libcalamares.globalstorage.contains("netinstallAdd"):
+                netinstall_data = libcalamares.globalstorage.value("netinstallAdd") + netinstall_data
+            libcalamares.globalstorage.insert("netinstallAdd", netinstall_data)
 
     return None
