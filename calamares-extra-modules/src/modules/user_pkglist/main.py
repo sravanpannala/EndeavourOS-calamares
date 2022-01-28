@@ -1,20 +1,47 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
-# Simple
-# Just run the script, no aditional config
+import os
 
-import subprocess
+
+import libcalamares
+from libcalamares.utils import gettext_path, gettext_languages
+
+import gettext
+
+_translation = gettext.translation("calamares-python",
+                                   localedir=gettext_path(),
+                                   languages=gettext_languages(),
+                                   fallback=True)
+_ = _translation.gettext
+_n = _translation.ngettext
+
+custom_status_message = None
+
+
+def pretty_name():
+    return _(libcalamares.job.configuration.get("name", "Loading user configured packages"))
+
+
+def get_netinstall_data(packages):
+    return {"source": "userPkgList", "name": libcalamares.job.configuration.get("netinstall_name", "Custom Packages"),
+            "description": libcalamares.job.configuration.get("netinstall_desc", "The custom packagelist defined"),
+            "hidden": False, "selected": True, "critical": True, "packages": packages}
+
 
 def run():
-    """
-    Installing user packages. Please be patient!
-    """
-    EXECUTABLE = "chmod +x"
-    SCRIPT_PATH = "/usr/lib/calamares/modules/user_pkglist/pkglist_install.sh"
+    # Get the file location from the configuration file
+    file_location = libcalamares.job.configuration.get("file_location", None)
+    if file_location and os.path.exists(file_location):
+        packages = []
+        # Read the file and consider each line a packagename
+        with open(file_location) as packages_file:
+            for line in packages_file:
+                if line.strip():
+                    packages.append(line.strip())
 
-    
-    try:
-        subprocess.call(EXECUTABLE.split(' ') +  [SCRIPT_PATH])
-        subprocess.call([SCRIPT_PATH])
-    except:
-        pass
+        # Turn the packages list into a structure suitable for netinstall and load it into global storage
+        if packages:
+            netinstall_data = get_netinstall_data(packages)
+            libcalamares.globalstorage.insert("netinstallAdd", [netinstall_data])
+
+    return None
