@@ -1,6 +1,6 @@
 ---
 $schema: https://json-schema.org/schema#
-$id: https://calamares.io/schemas/user_pkglist
+$id: https://calamares.io/schemas/userpkglist
 additionalProperties: false
 type: object
 properties:
