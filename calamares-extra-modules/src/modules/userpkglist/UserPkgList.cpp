@@ -76,7 +76,7 @@ UserPkgListJob::setConfigurationMap( const QVariantMap& map )
     while ( !packageStream.atEnd() )
     {
         QString line = packageStream.readLine();
-        if ( !line.trimmed().isEmpty() )
+        if ( !line.trimmed().isEmpty() && !line.trimmed().startsWith( "#" ) )
         {
             packages.append( line.trimmed() );
         }
