@@ -1,6 +1,6 @@
 ---
 $schema: https://json-schema.org/schema#
-$id: https://calamares.io/schemas/umount
+$id: https://calamares.io/schemas/eos_script
 additionalProperties: false
 type: object
 properties:
