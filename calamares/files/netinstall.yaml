@@ -170,7 +170,6 @@
         packages:
           - duf
           - findutils
-          - firefox
           - fsarchiver
           - git
           - glances
@@ -187,21 +186,32 @@
           - tldr
           - sed
           - wget
-- name: "Firefox language package"
-  description: "Add firefox language pack if possible"
-  hidden: true
+- name: "Firefox and language package"
+  description: "Add firefox and language pack if possible"
+  hidden: false
   selected: true
   critical: false
   packages:
+    - firefox
     - firefox-i18n-$LOCALE
 - name: "LTS Kernel in addition"
   description: "Adding Long Term Supported Kernel in addition to main one"
   hidden: false
   selected: false
+  expanded: false
   critical: true
   packages:
     - linux-lts
     - linux-lts-headers
+- name: "Zen Kernel"
+  description: "Adding ZEN kernel in addition to main one"
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - linux-zen
+    - linux-zen-headers
 - name: "XFCE4-Desktop"
   description: "XFCE4 - lightweight desktop fast and low on system resources, visually appealing and user friendly."
   hidden: false
