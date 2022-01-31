@@ -107,7 +107,7 @@ UseBestMirrorsIfAvailable() {
 RunCmd() {
     $cmd > $tf
     retval=$?
-    [ $retval -ne 0 ] || return
+    [ $retval -eq 0 ] || return
 
     UseBestMirrorsIfAvailable
 
