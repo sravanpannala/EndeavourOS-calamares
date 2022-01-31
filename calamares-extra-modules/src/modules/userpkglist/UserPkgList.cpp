@@ -52,7 +52,7 @@ getNetinstallData( const QStringList& packages, const QVariantMap& map )
              { "description", CalamaresUtils::getString( map, "netinstall_desc", "The custom packagelist defined" ) },
              { "hidden", false },
              { "selected", true },
-             { "critical", true },
+             { "critical", false },
              { "packages", packages } };
 }
 
