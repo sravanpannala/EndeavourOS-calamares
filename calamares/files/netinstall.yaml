@@ -222,7 +222,6 @@
       - name: "EndeavourOS-theming"
         description: "EndeavourOS XFCE4 theming (unselect to install vanilla)"
         selected: false
-        critical: false
         packages:
             - arc-gtk-theme-eos
             - arc-x-icons-theme
