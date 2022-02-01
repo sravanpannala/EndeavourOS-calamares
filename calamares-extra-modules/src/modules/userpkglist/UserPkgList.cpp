@@ -85,6 +85,7 @@ UserPkgListJob::setConfigurationMap( const QVariantMap& map )
     // Turn the packages list into a structure suitable for netinstall and load it into global storage
     if ( !packages.isEmpty() )
     {
+        cDebug() << "Loading custom user package list.  Packages: " << packages.join(" ");
         QVariantList netinstallList = { getNetinstallData( packages, map ) };
         Calamares::JobQueue::instance()->globalStorage()->insert( "netinstallAdd", netinstallList );
     }
