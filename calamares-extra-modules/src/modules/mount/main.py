@@ -265,7 +265,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                                     fstype,
                                     mount_options_string) != 0:
             libcalamares.utils.warning("Cannot mount {}".format(device))
-        mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
 
     # Special handling for btrfs subvolumes. Create the subvolumes listed in mount.conf
     if fstype == "btrfs" and partition["mountPoint"] == '/':
@@ -306,6 +305,9 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                                         fstype,
                                         mount_option) != 0:
                 libcalamares.utils.warning("Cannot mount {}".format(device))
+    else:
+        if fstype != "zfs":
+            mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
 
 
 def run():
