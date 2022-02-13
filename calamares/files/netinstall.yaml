@@ -40,7 +40,6 @@
           - ipw2100-fw
           - ipw2200-fw
           - iwd
-          - linux-atm
           - modemmanager
           - nbd
           - ndisc6
@@ -224,8 +223,7 @@
         selected: false
         packages:
             - arc-gtk-theme-eos
-            - arc-x-icons-theme
-            - capitaine-cursors
+            - eos-qogir-icons
             - endeavouros-skel-xfce4
             - endeavouros-xfce4-terminal-colors
       - name: "XFCE4-Desktop"
@@ -306,7 +304,7 @@
   packages:
     - adwaita-icon-theme
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - eog
     - evince
     - file-roller
@@ -346,10 +344,8 @@
     - arandr
     - arc-gtk-theme-eos
     - archlinux-xdg-menu
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - awesome-terminal-fonts
-    - capitaine-cursors
-    - celluloid
     - dex
     - dmenu
     - dunst
@@ -372,6 +368,7 @@
     - lightdm
     - lightdm-slick-greeter
     - lxappearance-gtk3
+    - mpv
     - network-manager-applet
     - nitrogen
     - numlockx
@@ -398,7 +395,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - celluloid
     - gvfs
     - gvfs-afc
@@ -419,7 +416,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - celluloid
     - cinnamon
     - cinnamon-translations
@@ -449,9 +446,8 @@
   selected: false
   critical: true
   packages:
-    - adwaita-icon-theme
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - budgie-desktop
     - budgie-desktop-view
     - budgie-extras
@@ -517,7 +513,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - celluloid
     - file-roller
     - galculator
