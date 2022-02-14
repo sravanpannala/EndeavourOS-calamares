@@ -336,13 +336,13 @@
     - acpi
     - arandr
     - arc-gtk-theme-eos
+    - arc-x-icons-theme
     - archlinux-xdg-menu
     - awesome-terminal-fonts
-    - dex
+    - dexcapitaine-cursors-light
     - dmenu
     - dunst
     - endeavouros-xfce4-terminal-colors
-    - eos-qogir-icons
     - file-roller
     - galculator
     - gthumb
