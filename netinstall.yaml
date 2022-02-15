@@ -339,7 +339,8 @@
     - arc-x-icons-theme
     - archlinux-xdg-menu
     - awesome-terminal-fonts
-    - dexcapitaine-cursors-light
+    - dex
+    - capitaine-cursors-light
     - dmenu
     - dunst
     - endeavouros-xfce4-terminal-colors
