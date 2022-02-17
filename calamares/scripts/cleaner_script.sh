@@ -86,23 +86,6 @@ _copy_files(){
     local config_file
     local target=/tmp/$chroot_path            # $target refers to the / folder of the installed system
 
-    if [ -x $target/usr/bin/sddm ] ; then
-        # This is for online install only, because offline install is set to use lightdm.
-
-        _cleaner_msg info "copying DM config file $config_file to target"
-
-        config_file=/etc/sddm.conf.d/kde_settings.conf
-        mkdir -p $target$(dirname $config_file)
-        cp /etc/calamares/files/sddm.conf.d/kde_settings.conf $target$config_file
-    fi
-
-    if [ -x $target/usr/bin/lightdm ] ; then
-        _cleaner_msg info "copying DM config file $config_file to target"
-
-        config_file=/etc/lightdm/slick-greeter.conf
-        rsync -vaRI $config_file $target
-    fi
-
     if [ -r /home/liveuser/setup.url ] ; then
         # Is this needed anymore?
         # /home/liveuser/setup.url contains the URL to personal setup.sh
