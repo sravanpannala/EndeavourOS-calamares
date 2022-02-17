@@ -157,6 +157,8 @@
           - eos-apps-info
           - eos-hooks
           - eos-log-tool
+          - eos-packagelist
+          - eos-quickstart
           - eos-rankmirrors
           - eos-update-notifier
           - grub-tools
@@ -223,6 +225,7 @@
         selected: false
         packages:
             - arc-gtk-theme-eos
+            - eos-lightdm-slick-theme
             - eos-qogir-icons
             - endeavouros-skel-xfce4
             - endeavouros-xfce4-terminal-colors
@@ -273,6 +276,7 @@
     - dolphin
     - dragon
     - elisa
+    - eos-sddm-theme
     - gwenview
     - kcalc
     - kate
@@ -344,6 +348,7 @@
     - arandr
     - arc-gtk-theme-eos
     - archlinux-xdg-menu
+    - eos-lightdm-slick-theme
     - eos-qogir-icons
     - awesome-terminal-fonts
     - dex
@@ -395,6 +400,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - eos-lightdm-slick-theme
     - eos-qogir-icons
     - celluloid
     - gvfs
@@ -416,6 +422,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - eos-lightdm-slick-theme
     - eos-qogir-icons
     - celluloid
     - cinnamon
@@ -447,6 +454,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - eos-lightdm-slick-theme
     - eos-qogir-icons
     - budgie-desktop
     - budgie-desktop-view
@@ -488,6 +496,7 @@
     - baka-mplayer
     - breeze
     - breeze-gtk
+    - eos-sddm-theme
     - featherpad
     - gvfs
     - gvfs-mtp
@@ -513,6 +522,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - eos-lxdm-gtk3
     - eos-qogir-icons
     - celluloid
     - file-roller
@@ -524,8 +534,6 @@
     - gvfs-mtp
     - gvfs-nfs
     - gvfs-smb
-    - lightdm
-    - lightdm-slick-greeter
     - lxappearance
     - lxappearance-obconf
     - lxde-common
