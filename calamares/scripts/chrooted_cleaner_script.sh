@@ -595,10 +595,10 @@ _run_hotfix_end() {
 _check_install_mode
 _endeavouros
 _virtual_machines
-_change_config_options
+#_change_config_options
 #_remove_gnome_software
 #_remove_discover
-_de_wm_config
+#_de_wm_config
 #_setup_personal
 _clean_up
 _run_hotfix_end
