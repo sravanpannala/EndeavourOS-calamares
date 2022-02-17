@@ -40,7 +40,6 @@
           - ipw2100-fw
           - ipw2200-fw
           - iwd
-          - linux-atm
           - modemmanager
           - nbd
           - ndisc6
@@ -158,6 +157,8 @@
           - eos-apps-info
           - eos-hooks
           - eos-log-tool
+          - eos-packagelist
+          - eos-quickstart
           - eos-rankmirrors
           - eos-update-notifier
           - grub-tools
