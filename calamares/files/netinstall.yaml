@@ -77,7 +77,6 @@
           - accountsservice
           - bash-completion
           - ffmpegthumbnailer
-          - freetype2
           - gst-libav
           - gst-plugin-pipewire
           - gst-plugins-bad
