@@ -169,7 +169,6 @@
         packages:
           - duf
           - findutils
-          - firefox
           - fsarchiver
           - git
           - glances
@@ -186,12 +185,13 @@
           - tldr
           - sed
           - wget
-- name: "Firefox language package"
-  description: "Add firefox language pack if possible"
-  hidden: true
+- name: "Firefox and language package"
+  description: "Add firefox and language pack if possible"
+  hidden: false
   selected: true
   critical: false
   packages:
+    - firefox
     - firefox-i18n-$LOCALE
 - name: "LTS Kernel in addition"
   description: "Adding Long Term Supported Kernel in addition to main one"
@@ -335,14 +335,13 @@
     - acpi
     - arandr
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
     - archlinux-xdg-menu
     - awesome-terminal-fonts
-    - capitaine-cursors
     - dex
     - dmenu
     - dunst
     - endeavouros-xfce4-terminal-colors
+    - eos-qogir-icons
     - file-roller
     - galculator
     - gthumb
@@ -388,7 +387,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - celluloid
     - gvfs
     - gvfs-afc
@@ -409,7 +408,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - celluloid
     - cinnamon
     - cinnamon-translations
@@ -441,7 +440,7 @@
   packages:
     - adwaita-icon-theme
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - budgie-desktop
     - budgie-desktop-view
     - budgie-extras
@@ -507,7 +506,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
-    - arc-x-icons-theme
+    - eos-qogir-icons
     - celluloid
     - file-roller
     - galculator
