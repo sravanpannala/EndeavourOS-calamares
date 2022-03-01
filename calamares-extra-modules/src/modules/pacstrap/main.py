@@ -18,6 +18,16 @@ _n = _translation.ngettext
 
 custom_status_message = None
 
+class PacmanError(Exception):
+    """Exception raised when the call to pacman returns a non-zero exit code
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
+
 
 def pretty_name():
     return _("Install base system")
@@ -35,8 +45,19 @@ def line_cb(line):
     """
     global custom_status_message
     custom_status_message = line.strip()
-    libcalamares.utils.debug("pacstrap: " + line)
+    libcalamares.utils.debug("pacstrap: " + line.strip())
     libcalamares.job.setprogress(0)
+
+
+def run_in_host(command, line_func):
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True,
+                            bufsize=1)
+    for line in proc.stdout:
+        if line.strip():
+            line_func(line)
+    proc.wait()
+    if proc.returncode != 0:
+        raise PacmanError("Failed to run pacman")
 
 
 def run():
@@ -68,9 +89,12 @@ def run():
     pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", root_mount_point] + base_packages
 
     try:
-        libcalamares.utils.host_env_process_output(pacstrap_command, line_cb)
+        run_in_host(pacstrap_command, line_cb)
     except subprocess.CalledProcessError as cpe:
         return "Failed to run pacstrap", "Pacstrap failed with error {!s}".format(cpe.stderr)
+    except PacmanError as pe:
+        return "Failed to run pacstrap", format(e)
+
 
     # copy files post install
     if "postInstallFiles" in libcalamares.job.configuration:
