@@ -527,6 +527,7 @@
     - celluloid
     - file-roller
     - galculator
+    - gnome-screenshot
     - gpicview
     - gvfs
     - gvfs-afc
