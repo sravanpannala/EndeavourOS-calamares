@@ -3,6 +3,7 @@
 import os
 import subprocess
 import shutil
+import time
 
 import libcalamares
 from libcalamares.utils import gettext_path, gettext_languages
@@ -17,6 +18,8 @@ _ = _translation.gettext
 _n = _translation.ngettext
 
 custom_status_message = None
+status_update_time = 0
+
 
 class PacmanError(Exception):
     """Exception raised when the call to pacman returns a non-zero exit code
@@ -44,9 +47,12 @@ def line_cb(line):
     :param line: The line of output text from the command
     """
     global custom_status_message
+    global status_update_time
     custom_status_message = line.strip()
     libcalamares.utils.debug("pacstrap: " + line.strip())
-    libcalamares.job.setprogress(0)
+    if (time.time() - status_update_time) > 0.5:
+        libcalamares.job.setprogress(0)
+        status_update_time = time.time()
 
 
 def run_in_host(command, line_func):
@@ -93,8 +99,7 @@ def run():
     except subprocess.CalledProcessError as cpe:
         return "Failed to run pacstrap", "Pacstrap failed with error {!s}".format(cpe.stderr)
     except PacmanError as pe:
-        return "Failed to run pacstrap", format(e)
-
+        return "Failed to run pacstrap", format(pe)
 
     # copy files post install
     if "postInstallFiles" in libcalamares.job.configuration:
