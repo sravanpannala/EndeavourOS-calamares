@@ -178,7 +178,7 @@ _clean_archiso(){
         /etc/systemd/logind.conf.d
         /etc/mkinitcpio-archiso.conf
         /etc/initcpio
-        /home/$NEW_USER/{.xinitrc,.xsession,.xprofile,.wget-hsts,.screenrc,.ICEauthority}
+        #/home/$NEW_USER/{.xinitrc,.xsession,.xprofile,.wget-hsts,.screenrc,.ICEauthority}
         /root/{.automated_script.sh,.zlogin,.xinitrc,.xsession,.xprofile,.wget-hsts,.screenrc,.ICEauthority,set_once.sh,xed.dconf}
         /root/.config/{qt5ct,Kvantum,dconf}
         /etc/motd
