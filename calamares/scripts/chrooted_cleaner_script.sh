@@ -251,7 +251,7 @@ _clean_offline_packages(){
     local xx
 
     for xx in "${_packages_to_remove[@]}" ; do
-        pacman -Rsc --noconfirm "$xx"
+        pacman -Rsn --noconfirm "$xx"
     done
 }
 
