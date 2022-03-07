@@ -242,7 +242,7 @@ _clean_offline_packages(){
     xcompmgr
     memtest86+
     mkinitcpio-archiso
-)
+    )
 
     # @ does one by one to avoid errors in the entire process
     # * can be used to treat all packages in one command
