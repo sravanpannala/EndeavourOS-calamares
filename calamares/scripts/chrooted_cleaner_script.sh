@@ -179,7 +179,7 @@ _clean_archiso(){
         /etc/mkinitcpio-archiso.conf
         /etc/initcpio
         /home/$NEW_USER/{.wget-hsts,.screenrc,.ICEauthority}
-        /root/{.automated_script.sh,.zlogin,.xinitrc,.xsession,.xprofile,.wget-hsts,.screenrc,.ICEauthority,set_once.sh,xed.dconf}
+        /root/{.automated_script.sh,.zlogin,.xinitrc,.xprofile,.wget-hsts,.screenrc,.ICEauthority,set_once.sh,xed.dconf}
         /root/.config/{qt5ct,Kvantum,dconf}
         /etc/motd
         /{gpg.conf,gpg-agent.conf,pubring.gpg,secring.gpg}
