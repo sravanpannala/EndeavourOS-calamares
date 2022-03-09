@@ -178,8 +178,8 @@ _clean_archiso(){
         /etc/systemd/logind.conf.d
         /etc/mkinitcpio-archiso.conf
         /etc/initcpio
-        /home/$NEW_USER/{.xinitrc,.xsession,.xprofile,.wget-hsts,.screenrc,.ICEauthority}
-        /root/{.automated_script.sh,.zlogin,.xinitrc,.xsession,.xprofile,.wget-hsts,.screenrc,.ICEauthority,set_once.sh,xed.dconf}
+        /home/$NEW_USER/{.wget-hsts,.screenrc,.ICEauthority}
+        /root/{.automated_script.sh,.zlogin,.xinitrc,.xprofile,.wget-hsts,.screenrc,.ICEauthority,set_once.sh,xed.dconf}
         /root/.config/{qt5ct,Kvantum,dconf}
         /etc/motd
         /{gpg.conf,gpg-agent.conf,pubring.gpg,secring.gpg}
@@ -242,7 +242,7 @@ _clean_offline_packages(){
     xcompmgr
     memtest86+
     mkinitcpio-archiso
-)
+    )
 
     # @ does one by one to avoid errors in the entire process
     # * can be used to treat all packages in one command
@@ -469,11 +469,6 @@ _clean_up(){
     _install_extra_drivers_to_target
 
     _misc_cleanups
-
-    # if both Xfce and i3 are installed, remove dex package
-    if [ -r /usr/share/xsessions/xfce.desktop ] && [ -r /usr/share/xsessions/i3.desktop ] ; then
-        _remove_a_pkg dex
-    fi
 
     # on the target, select file server based on country
     xx=/usr/bin/eos-select-file-server
