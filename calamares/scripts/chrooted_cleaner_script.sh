@@ -432,7 +432,7 @@ _RunUserCommands() {
     local usercmdfile=/tmp/user_commands.bash
     if [ -r $usercmdfile ] ; then
         _c_c_s_msg info "running script $(basename $usercmdfile)"
-        bash $usercmdfile
+        bash $usercmdfile $NEW_USER
     fi
 }
 
