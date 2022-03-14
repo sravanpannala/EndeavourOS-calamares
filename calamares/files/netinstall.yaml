@@ -227,7 +227,7 @@
             - arc-gtk-theme-eos
             - eos-lightdm-slick-theme
             - eos-qogir-icons
-            - endeavouros-skel-xfce4-testing
+            - endeavouros-skel-xfce4
             - endeavouros-xfce4-terminal-colors
       - name: "XFCE4-Desktop"
         description: "XFCE4 needed packages"
@@ -275,7 +275,7 @@
     - arandr
     - arc-gtk-theme-eos
     - archlinux-xdg-menu
-    - endeavouros-skel-i3wm-testing
+    - endeavouros-skel-i3wm
     - eos-lightdm-slick-theme
     - eos-qogir-icons
     - awesome-terminal-fonts
