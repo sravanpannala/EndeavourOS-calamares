@@ -497,7 +497,7 @@
     - baka-mplayer
     - breeze
     - breeze-gtk
-    - eos-lxdm-gtk3
+    - eos-sddm-theme
     - featherpad
     - gvfs
     - gvfs-mtp
