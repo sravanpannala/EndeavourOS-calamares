@@ -512,7 +512,6 @@
     - pavucontrol-qt
     - print-manager
     - qt5-translations
-    - sddm
     - xdg-utils
     - xscreensaver
     - xsettingsd
