@@ -41,6 +41,7 @@ EndeavourOS Calamares Theme
 	font: 18px;
 	padding-top: 30px;
 	background-position: center;
+	background-repeat: no-repeat;
 }
 
 QWidget {
