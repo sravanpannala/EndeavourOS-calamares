@@ -40,6 +40,8 @@ EndeavourOS Calamares Theme
 	background-image: url(/etc/calamares/branding/endeavouros/img/bg_sidebar_left.png);
 	font: 18px;
 	padding-top: 30px;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 QWidget {
