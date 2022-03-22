@@ -374,17 +374,6 @@ class PMPackageKit(PackageManager):
         check_target_env_call(["pkcon", "-py", "update"])
 
 
-class PacmanError(Exception):
-    """Exception raised when the call to pacman returns a non-zero exit code
-
-    Attributes:
-        message -- explanation of the error
-    """
-
-    def __init__(self, message):
-        self.message = message
-
-
 class PMPacman(PackageManager):
     backend = "pacman"
 
@@ -427,20 +416,6 @@ class PMPacman(PackageManager):
         # These are globals
         self.progress_fraction = (completed_packages * 1.0 / total_packages)
 
-    @staticmethod
-    def run_in_chroot(command, line_func):
-        install_path = libcalamares.globalstorage.value("rootMountPoint")
-        new_command = ["chroot", install_path]
-        new_command.extend(command)
-        proc = subprocess.Popen(new_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True,
-                                bufsize=1)
-        for line in proc.stdout:
-            if line.strip():
-                line_func(line)
-        proc.wait()
-        if proc.returncode != 0:
-            raise PacmanError("Failed to run pacman")
-
     def run_pacman(self, command, callback=False):
         """
         Call pacman in a loop until it is successful or the number of retries is exceeded
@@ -454,12 +429,12 @@ class PMPacman(PackageManager):
             pacman_count += 1
             try:
                 if callback is True:
-                    self.run_in_chroot(command, self.line_cb)
+                    libcalamares.utils.target_env_process_output(command, self.line_cb)
                 else:
                     libcalamares.utils.target_env_process_output(command)
 
                 return
-            except subprocess.CalledProcessError or PacmanError:
+            except subprocess.CalledProcessError:
                 if pacman_count <= self.pacman_num_retries:
                     pass
                 else:
