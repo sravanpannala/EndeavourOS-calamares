@@ -60,6 +60,11 @@
           - wireless_tools
           - wpa_supplicant
           - xl2tpd
+      - name: "firewall"
+        description: "Firewall support"
+        selected: true
+        packages:
+          - firewalld
       - name: "packages management"
         description: "Packages tools"
         selected: true
