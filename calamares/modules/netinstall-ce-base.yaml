@@ -29,6 +29,8 @@
         selected: true
         packages:
           - b43-fwcutter
+          - bluez
+          - bluez-utils
           - broadcom-wl-dkms
           - crda
           - dhclient
