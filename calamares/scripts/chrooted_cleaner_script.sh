@@ -242,6 +242,7 @@ _clean_offline_packages(){
     xcompmgr
     memtest86+
     mkinitcpio-archiso
+    blueberry
     )
 
     # @ does one by one to avoid errors in the entire process
