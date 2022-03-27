@@ -122,7 +122,6 @@
           - ttf-dejavu
           - ttf-liberation
           - ttf-opensans
-          - xorg-font-utils
       - name: "audio"
         description: "Audio handling tools apps and libs"
         selected: true
