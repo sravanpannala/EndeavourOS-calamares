@@ -29,8 +29,6 @@
         selected: true
         packages:
           - b43-fwcutter
-          - bluez
-          - bluez-utils
           - broadcom-wl-dkms
           - crda
           - dhclient
@@ -67,6 +65,12 @@
         selected: true
         packages:
           - firewalld
+      - name: "bluetooth"
+        description: "Bluetooth support"
+        selected: true
+        packages:
+          - bluez
+          - bluez-utils
       - name: "packages management"
         description: "Packages tools"
         selected: true
