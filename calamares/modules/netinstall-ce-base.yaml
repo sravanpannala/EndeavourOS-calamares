@@ -30,7 +30,6 @@
         packages:
           - b43-fwcutter
           - broadcom-wl-dkms
-          - crda
           - dhclient
           - dialog
           - dnsmasq
@@ -188,7 +187,6 @@
           - meld
           - nano-syntax-highlighting
           - neofetch
-          - pcurses
           - pv
           - python-defusedxml
           - python-packaging
