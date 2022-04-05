@@ -64,6 +64,8 @@
         selected: true
         packages:
           - firewalld
+          - python-pyqt5
+          - python-capng
       - name: "bluetooth"
         description: "Bluetooth support"
         selected: true
