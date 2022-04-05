@@ -251,6 +251,9 @@
     - python-pyqt5
     - python-reportlab
     - xsane
+    - cups
+    - cups-filters
+    - cups-pdf
 - name: "Accessibility Tools"
   description: "Screen reader and mouse tweaks (impaired vision)"
   hidden: false
