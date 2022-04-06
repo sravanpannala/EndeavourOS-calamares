@@ -210,18 +210,13 @@ _clean_offline_packages(){
     tcpdump
     libpwquality
     refind
-    rate-mirrors-bin
-    kvantum-qt5
+    rate-mirrors
+    kvantum
     polkit-qt5
-    qca-qt5
-    qt5-location
-    qt5-multimedia
-    qt5-speech
-    qt5-wayland
+    qt5-declarative
     qt5-webchannel
     qt5-webengine
-    qt5-xmlpatterns
-    qt5-base
+    qt6-base
     sonnet
     kwidgetsaddons
     kitemviews
@@ -229,6 +224,7 @@ _clean_offline_packages(){
     kdbusaddons
     kcoreaddons
     karchive
+    ki18n
     qt5ct
     arch-install-scripts
     squashfs-tools
