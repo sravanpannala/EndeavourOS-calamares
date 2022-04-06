@@ -258,7 +258,7 @@ _endeavouros(){
 }
 
 _is_offline_mode() {
-    if [ ${INSTALL_TYPE} = "online" ] ; then
+    if [ "$INSTALL_TYPE" = "online" ] ; then
         return 1           # online install mode
     else
         return 0           # offline install mode
