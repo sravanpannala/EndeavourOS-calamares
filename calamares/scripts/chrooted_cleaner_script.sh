@@ -595,4 +595,4 @@ _virtual_machines
 _clean_up
 _run_hotfix_end
 
-rm -R /etc/calamares /opt/extra-drivers
+rm -rf /etc/calamares /opt/extra-drivers
