@@ -6,6 +6,7 @@
 # Net-install creates the file /tmp/run_once in live environment (need to be transfered to installed system) so it can be used to detect install option
 # ISO-NEXT specific cleanup removals and additions (08-2021) @killajoe and @manuel
 # 01-2022 passing in online and username as params - @dalto
+# 04-2022 small code re-organization - @manuel
 
 _c_c_s_msg() {            # use this to provide all user messages (info, warning, error, ...)
     local type="$1"
@@ -14,29 +15,14 @@ _c_c_s_msg() {            # use this to provide all user messages (info, warning
 }
 
 _pkg_msg() {            # use this to provide all package management messages (install, uninstall)
-    local type="$1"
+    local op="$1"
     local pkgs="$2"
-    case "$type" in
-        remove | uninstall) type="uninstalling" ;;
-        install) type="installing" ;;
+    case "$op" in
+        remove | uninstall) op="uninstalling" ;;
+        install) op="installing" ;;
     esac
-    echo "==> $type $pkgs"
+    echo "==> $op $pkgs"
 }
-
-# parse the options
-for i in "$@"; do
-    case $i in
-        --user=*)
-            NEW_USER="${i#*=}"
-            shift
-        ;;
-        --online)
-            INSTALL_TYPE="online"
-            shift
-        ;;
-    esac
-done
-
 
 _check_internet_connection(){
     eos-connection-checker
@@ -60,7 +46,7 @@ _remove_pkgs_if_installed() {  # this is not meant for offline mode !?
     local removables=()
     for pkgname in "$@" ; do
         if _is_pkg_installed "$pkgname" ; then
-            _pkg_msg remove "removing $pkgname"
+            _pkg_msg remove "$pkgname"
             removables+=("$pkgname")
         fi
     done
@@ -580,19 +566,50 @@ _run_hotfix_end() {
     }
 }
 
+Main() {
+    local filename=chrooted_cleaner_script.sh
+
+    _c_c_s_msg info "$filename started."
+
+    local i
+    local NEW_USER="" INSTALL_TYPE=""
+
+    # parse the options
+    for i in "$@"; do
+        case $i in
+            --user=*)
+                NEW_USER="${i#*=}"
+                shift
+                ;;
+            --online)
+                INSTALL_TYPE="online"
+                shift
+                ;;
+        esac
+    done
+    if [ -z "$NEW_USER" ] ; then
+        _c_c_s_msg error "new username is unknown!"
+    fi
+
+    _check_install_mode
+    _endeavouros
+    _virtual_machines
+    #_change_config_options
+    #_remove_gnome_software
+    #_remove_discover
+    #_de_wm_config
+    #_setup_personal
+    _clean_up
+    _run_hotfix_end
+
+    rm -rf /etc/calamares /opt/extra-drivers
+
+    _c_c_s_msg info "$filename done."
+}
+
+
 ########################################
 ########## SCRIPT STARTS HERE ##########
 ########################################
 
-_check_install_mode
-_endeavouros
-_virtual_machines
-#_change_config_options
-#_remove_gnome_software
-#_remove_discover
-#_de_wm_config
-#_setup_personal
-_clean_up
-_run_hotfix_end
-
-rm -rf /etc/calamares /opt/extra-drivers
+Main "$@"
