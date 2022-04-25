@@ -200,7 +200,6 @@ _clean_offline_packages(){
     qt5-declarative
     qt5-webchannel
     qt5-webengine
-    qt6-base
     sonnet
     kwidgetsaddons
     kitemviews
