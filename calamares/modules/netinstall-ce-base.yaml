@@ -139,6 +139,7 @@
           - pipewire-media-session
           - pipewire-alsa
           - pipewire-jack
+          - rtkit
       - name: "hardware"
         description: "Hardware support libs and firmware"
         selected: true
