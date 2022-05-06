@@ -66,12 +66,6 @@
           - firewalld
           - python-pyqt5
           - python-capng
-      - name: "bluetooth"
-        description: "Bluetooth support"
-        selected: true
-        packages:
-          - bluez
-          - bluez-utils
       - name: "packages management"
         description: "Packages tools"
         selected: true
@@ -88,6 +82,8 @@
         packages:
           - accountsservice
           - bash-completion
+          - bluez
+          - bluez-utils
           - ffmpegthumbnailer
           - gst-libav
           - gst-plugin-pipewire
@@ -244,6 +240,7 @@
         description: "XFCE4 needed packages"
         selected: false
         packages:
+         - blueberry 
          - file-roller
          - galculator
          - gvfs
@@ -340,6 +337,7 @@
   packages:
     - ark
     - audiocd-kio
+    - bluedevil
     - breeze-gtk
     - dolphin
     - dragon
