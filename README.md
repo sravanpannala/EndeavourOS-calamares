@@ -1,11 +1,20 @@
 # calamares extra-modules, installer-scripts, branding and module configuration files for EndeavourOS install process
 
-<small> New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process. </small>
+**Changelog:**
+
+* New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process.
+* Review and rewrite of custom modules (pacstrap e.t.c) for better integration into calamares and easier maintainment by dalto manuel and joekamprad (early 2022) 
+* Build script cleanup and minimizations done by keybreak and joekamprad (April 2022)
+
+...
 
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
 
 <img src="https://raw.githubusercontent.com/endeavouros-team/screenshots/master/eos-calamares-nov21.png" alt="calamares-welcome" width="600"/>
+
+...
+
 
 # Calamares EndeavourOS repository
 
