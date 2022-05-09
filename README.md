@@ -1,5 +1,6 @@
 # calamares extra-modules, installer-scripts, branding and module configuration files for EndeavourOS install process
-New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process.
+
+<small> New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process. </small>
 
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
@@ -8,7 +9,14 @@ New merged repository structure (october 2021) by joekamprad this repo now holds
 
 # Calamares EndeavourOS repository
 
-used by the following PKGBUILD's:
+Calamares startup is handled by welcome (application) on EndeavourOS:
+
+https://github.com/endeavouros-team/PKGBUILDS/tree/master/welcome
+
+https://github.com/endeavouros-team/PKGBUILDS/blob/master/welcome/eos-install-mode-run-calamares
+
+
+The config files in this repository are used by the following PKGBUILD's:
 
 1. Calamares package itself:
 
@@ -18,7 +26,7 @@ https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_current
 
 https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_config_default
 
-3. splitting out Community related configurations to be able to update on the run:
+3. Community Edition related configurations:
 
 https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_config_ce
 
