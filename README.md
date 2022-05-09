@@ -1,5 +1,5 @@
 
-# Calamares EndeavourOS repository
+# EndeavourOS Calamares repository
 **EndeavourOS specific calamares extra-modules, installer-scripts, branding and module configuration files**
 
 
