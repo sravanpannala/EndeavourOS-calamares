@@ -1,12 +1,4 @@
-# calamares extra-modules, installer-scripts, branding and module configuration files for EndeavourOS install process
-
-**Changelog:**
-
-* New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process.
-* Review and rewrite of custom modules (pacstrap e.t.c) for better integration into calamares and easier maintainment by dalto manuel and joekamprad (early 2022) 
-* Build script cleanup and minimizations done by keybreak and joekamprad (April 2022)
-
-...
+# EndeavourOS specific calamares extra-modules, installer-scripts, branding and module configuration files
 
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
@@ -40,3 +32,8 @@ https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_config_defau
 https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_config_ce
 
 
+**Changelog:**
+
+* New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process.
+* Review and rewrite of custom modules (pacstrap e.t.c) for better integration into calamares and easier maintainment by dalto manuel and joekamprad (early 2022) 
+* Build script cleanup and minimizations done by keybreak and joekamprad (April 2022)
