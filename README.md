@@ -1,4 +1,6 @@
-# EndeavourOS specific calamares extra-modules, installer-scripts, branding and module configuration files
+
+# Calamares EndeavourOS repository
+**EndeavourOS specific calamares extra-modules, installer-scripts, branding and module configuration files**
 
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
@@ -7,8 +9,6 @@
 
 ...
 
-
-# Calamares EndeavourOS repository
 
 Calamares startup is handled by welcome (application) on EndeavourOS:
 
