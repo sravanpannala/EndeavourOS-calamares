@@ -132,7 +132,7 @@
           - alsa-utils
           - pavucontrol
           - pipewire-pulse
-          - pipewire-media-session
+          - wireplumber
           - pipewire-alsa
           - pipewire-jack
           - rtkit
