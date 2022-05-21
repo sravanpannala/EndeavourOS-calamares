@@ -180,48 +180,52 @@ _clean_archiso(){
 
 _clean_offline_packages(){
 
-    local _packages_to_remove=( 
-    gparted
-    grsync
-    calamares_current
-    calamares_config_default
-    calamares_config_ce
-    edk2-shell
-    boost-libs
-    doxygen
-    expect
-    gpart
-    tcpdump
-    libpwquality
-    refind
-    rate-mirrors
-    kvantum
-    polkit-qt5
-    qt5-declarative
-    qt5-webchannel
-    qt5-webengine
-    sonnet
-    kwidgetsaddons
-    kitemviews
-    kguiaddons
-    kdbusaddons
-    kcoreaddons
-    karchive
-    ki18n
-    qt5ct
-    arch-install-scripts
-    squashfs-tools
-    extra-cmake-modules 
-    cmake
-    elinks
-    yaml-cpp
-    syslinux
-    clonezilla
-    ckbcomp
-    xcompmgr
-    memtest86+
-    mkinitcpio-archiso
-    blueberry
+    local _packages_to_remove=(
+
+        # BASE
+
+        ## Base system
+        edk2-shell
+
+        ## Boot
+        refind
+
+
+        # SOFTWARE
+
+        ## Bluetooth
+        blueberry
+
+
+        # ISO
+
+        ## Live iso specific
+        arch-install-scripts
+        memtest86+
+        mkinitcpio-archiso
+        pv
+        syslinux
+
+        ## Live iso tools
+        clonezilla
+        gpart
+        gparted
+        grsync
+        hdparm
+
+
+        # ENDEAVOUROS REPO
+
+        ## General
+        ckbcomp
+        rate-mirrors
+
+        ## Calamares EndeavourOS
+        calamares_config_ce
+        calamares_config_default
+        calamares_current
+        kvantum
+        qt5ct
     )
 
     # @ does one by one to avoid errors in the entire process
@@ -231,7 +235,7 @@ _clean_offline_packages(){
     local xx
 
     for xx in "${_packages_to_remove[@]}" ; do
-        pacman -Rsc --noconfirm "$xx"
+        pacman -Rsn --noconfirm "$xx"
     done
 }
 
