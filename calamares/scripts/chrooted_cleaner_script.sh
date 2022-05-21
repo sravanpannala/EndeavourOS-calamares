@@ -203,6 +203,7 @@ _clean_offline_packages(){
         arch-install-scripts
         memtest86+
         mkinitcpio-archiso
+        pv
         syslinux
 
         ## Live iso tools
@@ -210,6 +211,7 @@ _clean_offline_packages(){
         gpart
         gparted
         grsync
+        hdparm
 
 
         # ENDEAVOUROS REPO
