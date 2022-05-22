@@ -217,13 +217,13 @@ _clean_offline_packages(){
         # ENDEAVOUROS REPO
 
         ## General
-        ckbcomp
         rate-mirrors
 
         ## Calamares EndeavourOS
         calamares_config_ce
         calamares_config_default
         calamares_current
+        ckbcomp
         kvantum
         qt5ct
     )
