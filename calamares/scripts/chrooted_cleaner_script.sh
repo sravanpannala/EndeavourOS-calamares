@@ -360,6 +360,14 @@ _install_extra_drivers_to_target() {
     fi
 }
 
+_install_more_firmware() {
+    # Install possibly missing firmware packages based on detected hardware
+
+    if [ -n "$(lspci -k | grep "Kernel driver in use: mwifiex_pcie")" ] ; then    # e.g. Microsoft Surface Pro
+        _install_needed_packages linux-firmware-marvell
+    fi
+}
+
 _nvidia_remove() {
     _pkg_msg remove "$*"
     pacman -Rsc --noconfirm "$@"
@@ -451,6 +459,7 @@ _clean_up(){
     _remove_broadcom_wifi_driver
 
     _install_extra_drivers_to_target
+    _install_more_firmware
 
     _misc_cleanups
 
