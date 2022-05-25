@@ -155,7 +155,6 @@ _clean_archiso(){
 
     local _files_to_remove=(                               
         /etc/sudoers.d/g_wheel
-        /etc/ssh/sshd_config
         /var/lib/NetworkManager/NetworkManager.state
         /etc/systemd/system/getty@tty1.service.d/autologin.conf
         /etc/systemd/system/getty@tty1.service.d
