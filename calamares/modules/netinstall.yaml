@@ -211,7 +211,7 @@
   packages:
     - linux-lts
     - linux-lts-headers
-- name: "Zen Kernel"
+- name: "Zen Kernel in addition"
   description: "Adding ZEN kernel in addition to main one"
   hidden: false
   selected: false
