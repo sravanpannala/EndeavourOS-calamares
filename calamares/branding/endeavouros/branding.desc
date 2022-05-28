@@ -27,7 +27,7 @@ strings:
 images:
     productLogo:         "endeavouros-logo.png"
     productIcon:         "endeavouros-icon.png"
-    productWelcome:      "endeavouros_lang.png"
+    productWelcome:      "opening-banner.jpg"
     
 slideshowAPI: 2
 
