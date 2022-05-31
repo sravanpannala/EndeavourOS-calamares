@@ -375,6 +375,7 @@
   packages:
     - adwaita-icon-theme
     - arc-gtk-theme-eos
+    - endeavouros-gschema-gnome-git
     - eos-qogir-icons
     - eog
     - evince
@@ -504,6 +505,7 @@
     - baka-mplayer
     - breeze
     - breeze-gtk
+    - endeavouros-skel-lxqt-git
     - eos-sddm-theme
     - featherpad
     - gvfs
@@ -529,6 +531,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - endeavouros-skel-lxde-git
     - eos-lxdm-gtk3
     - eos-qogir-icons
     - celluloid
