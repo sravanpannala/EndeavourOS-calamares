@@ -37,7 +37,7 @@ EndeavourOS Calamares Theme
 
 
 #sidebarMenuApp {
-	background-image: url(/etc/calamares/branding/endeavouros/img/bg_sidebar_left.png);
+	background-image: url(/etc/calamares/branding/endeavouros/img/side-bar.png);
 	font: 18px;
 	padding-top: 30px;
 	background-position: center;
@@ -56,44 +56,6 @@ QListWidget::item:alternate {
 QDialogButtonBox { 
 	dialogbuttonbox-buttons-have-icons: 0;
 }
-
-
-#debugButton {
-	background-color: none;
-	font: bold 8px;
-	color: #ffffff;
-	height: 32px;
-    	padding: 0px;
-	border: none;
-}
-
-#debugButton:pressed {
-	color: #7F3FBF;
-}
-
-#debugButton:hover {
-	color: #7F3FBF;
-}
-
-#aboutButton {
-	background-color: none;
-	font: 16px;
-	color: #000000;
-    	border: none;
-}
-
-#aboutButton:pressed {
-	color: #7F3FBF;
-}
-
-#aboutButton:hover {
-	color: #7F3FBF;
-}
-
-
-
-
-
 
 /* Partitioning module.
 

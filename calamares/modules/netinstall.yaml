@@ -342,6 +342,7 @@
     - dolphin
     - dragon
     - elisa
+    - endeavouros-skel-plasma-git
     - eos-plasma-sddm-config
     - gwenview
     - kcalc
@@ -410,6 +411,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - endeavouros-skel-mate-git
     - eos-lightdm-slick-theme
     - eos-qogir-icons
     - celluloid
@@ -464,6 +466,7 @@
   critical: true
   packages:
     - arc-gtk-theme-eos
+    - endeavouros-gschema-budgie-git
     - eos-lightdm-slick-theme
     - eos-qogir-icons
     - budgie-control-center

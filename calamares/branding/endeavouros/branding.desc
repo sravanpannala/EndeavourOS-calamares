@@ -27,12 +27,12 @@ strings:
 images:
     productLogo:         "endeavouros-logo.png"
     productIcon:         "endeavouros-icon.png"
-    productWelcome:      "endeavouros_lang.png"
+    productWelcome:      "opening-banner.jpg"
     
 slideshowAPI: 2
 
 style:
-   sidebarBackground:    "#3e424d"
+   sidebarBackground:    "#000000"
    sidebarText:          "#ffffff"
    sidebarTextSelect:    "#000000"
    sidebarTextHighlight: "#f5f6f7"
