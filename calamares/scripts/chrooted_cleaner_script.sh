@@ -51,7 +51,7 @@ _remove_pkgs_if_installed() {  # this is not meant for offline mode !?
         fi
     done
     if [ -n "$removables" ] ; then
-        pacman -Rsn --noconfirm "${removables[@]}"
+        pacman -Rs --noconfirm "${removables[@]}"
     fi
 }
 
@@ -377,10 +377,13 @@ _remove_nvidia_drivers() {
 
     if _is_offline_mode ; then
         # delete packages separately to avoid all failing if one fails
-        _nvidia_remove nvidia-dkms
-        _nvidia_remove nvidia-utils
-        _nvidia_remove nvidia-settings
-        _nvidia_remove nvidia-installer-dkms
+        [ -r /usr/share/licenses/nvidia-dkms/LICENSE ]      && _nvidia_remove nvidia-dkms
+        [ -x /usr/bin/nvidia-modprobe ]                     && _nvidia_remove nvidia-utils
+        [ -x /usr/bin/nvidia-settings ]                     && _nvidia_remove nvidia-settings
+        [ -x /usr/bin/nvidia-installer-dkms ]               && _nvidia_remove nvidia-installer-dkms
+        [ -x /usr/bin/nvidia-inst ]                         && _nvidia_remove nvidia-inst
+        [ -r /usr/share/libalpm/hooks/eos-nvidia-fix.hook ] && _nvidia_remove nvidia-hook
+        true
     fi
 }
 
@@ -397,7 +400,7 @@ _manage_nvidia_packages() {
         if [ "$nvidia_driver" = "no" ] ; then
             _remove_nvidia_drivers
         elif [ "$nvidia_card" = "yes" ] ; then
-            _install_needed_packages nvidia-installer-dkms nvidia-dkms
+            _install_needed_packages nvidia-installer-dkms nvidia-inst nvidia-hook nvidia-dkms
             nvidia-installer-kernel-para
         fi
     fi
