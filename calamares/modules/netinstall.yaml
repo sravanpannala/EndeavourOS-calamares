@@ -1,4 +1,4 @@
-- name: "Systembase + Common packages"
+- name: "Desktop-Base + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false
   selected: true
