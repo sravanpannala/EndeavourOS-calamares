@@ -480,6 +480,7 @@
     - file-roller
     - gedit
     - gnome-keyring
+    - gnome-screenshot
     - gnome-terminal
     - gvfs
     - gvfs-afc
