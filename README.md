@@ -5,7 +5,7 @@
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
 
-<img src="https://raw.githubusercontent.com/endeavouros-team/screenshots/master/eos-calamares-nov21.png" alt="calamares-welcome" width="600"/>
+<img src="https://raw.githubusercontent.com/endeavouros-team/screenshots/master/Artemis/Artemis-Calamares.png" alt="calamares-welcome" width="600"/>
 
 ...
 
