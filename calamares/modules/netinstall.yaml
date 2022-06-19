@@ -240,7 +240,7 @@
         description: "XFCE4 needed packages"
         selected: false
         packages:
-         - blueberry 
+         - blueberry
          - file-roller
          - galculator
          - gvfs
