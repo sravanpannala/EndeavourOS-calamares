@@ -57,6 +57,31 @@ QDialogButtonBox {
 	dialogbuttonbox-buttons-have-icons: 0;
 }
 
+#debugButton {
+	background-color: none;
+	font: 12px;
+	color: #edecf0;
+    height: 32px;
+    border: none;
+}
+
+
+#debugButton:hover {
+	color: #ff7f7f;
+}
+
+#aboutButton {
+	background-color: none;
+	font: 12px;
+	color: #edecf0;
+    height: 32px;
+    border: none;
+}
+
+#aboutButton:hover {
+	color: #ff7f7f;
+}
+
 /* Partitioning module.
 
 #bootInfoIcon { }
