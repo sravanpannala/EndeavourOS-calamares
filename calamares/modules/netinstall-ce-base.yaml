@@ -1,4 +1,4 @@
-- name: "Systembase + Common packages"
+- name: "Desktop-Base + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false
   selected: true
@@ -224,27 +224,27 @@
   description: "Support for printing (Cups)"
   hidden: false
   selected: false
-  critical: false
+  critical: true
   packages:
     - cups
     - cups-filters
     - cups-pdf
+    - foomatic-db
+    - foomatic-db-engine
+    - foomatic-db-gutenprint-ppds
+    - foomatic-db-nonfree
+    - foomatic-db-nonfree-ppds
+    - foomatic-db-ppds
     - ghostscript
     - gsfonts
-    - foomatic-db-engine
-    - foomatic-db
-    - foomatic-db-ppds
-    - foomatic-db-nonfree
-    - foomatic-db-nonfree-ppds 
-    - gutenprint 
-    - foomatic-db-gutenprint-ppds
+    - gutenprint
     - splix
     - system-config-printer
 - name: "Support for HP Printer/Scanner"
   description: "Extra Packages for HP Printer/Scanner"
   hidden: false
   selected: false
-  critical: false
+  critical: true
   packages:
     - hplip
     - python-pyqt5
@@ -257,8 +257,8 @@
   description: "Screen reader and mouse tweaks (impaired vision)"
   hidden: false
   selected: false
-  critical: false
+  critical: true
   packages:
-    - orca
-    - mousetweaks
     - espeak-ng
+    - mousetweaks
+    - orca
