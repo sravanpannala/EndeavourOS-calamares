@@ -1,7 +1,7 @@
 ### Documentation on why we are using this modified versions will follow here:
 
 
-1. **copy_kernel:**
+1. **copy_kernel:** *unused* now a shellprocess: [shellprocess_ck.conf](https://github.com/endeavouros-team/EndeavourOS-calamares/blob/main/calamares/modules/shellprocess_ck.conf)
 
 2. **eos_script:** This module is unique to EndeavourOS, and used to integrate the scripts we need to create EndeavourOS and mainly Archlinux specific configurations.
 
