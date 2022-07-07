@@ -15,7 +15,7 @@ include_directories(
 )
 
 calamares_add_test(
-    partitionjobtest
+    partitionjobtest_arm
     SOURCES
         PartitionJobTests.cpp
         ${PartitionModule_SOURCE_DIR}/core/KPMHelpers.cpp
@@ -30,14 +30,14 @@ calamares_add_test(
 )
 
 calamares_add_test(
-    partitionclearmountsjobtest
+    partitionclearmountsjobtest_arm
     SOURCES ${PartitionModule_SOURCE_DIR}/jobs/ClearMountsJob.cpp ClearMountsJobTests.cpp
     LIBRARIES kpmcore
     DEFINITIONS ${_partition_defs}
 )
 
 calamares_add_test(
-    partitioncreatelayoutstest
+    partitioncreatelayoutstest_arm
     SOURCES
         CreateLayoutsTests.cpp
         ${PartitionModule_SOURCE_DIR}/core/KPMHelpers.cpp
@@ -50,13 +50,13 @@ calamares_add_test(
 )
 
 calamares_add_test(
-    partitionautomounttest
+    partitionautomounttest_arm
     SOURCES ${PartitionModule_SOURCE_DIR}/jobs/AutoMountManagementJob.cpp AutoMountTests.cpp
     DEFINITIONS ${_partition_defs}
 )
 
 calamares_add_test(
-    partitiondevicestest
+    partitiondevicestest_arm
     SOURCES DevicesTests.cpp ${PartitionModule_SOURCE_DIR}/core/DeviceList.cpp
     LIBRARIES kpmcore
     DEFINITIONS ${_partition_defs}

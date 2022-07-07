@@ -56,7 +56,7 @@ if(KPMcore_FOUND AND Qt5DBus_FOUND AND KF5CoreAddons_FOUND AND KF5Config_FOUND)
 
     add_subdirectory(tests)
 
-    calamares_add_plugin(partition
+    calamares_add_plugin(partition_arm
         TYPE viewmodule
         EXPORT_MACRO PLUGINDLLEXPORT_PRO
         SOURCES
