@@ -1,0 +1,62 @@
+#!/bin/bash
+
+_find_mirrorlist() {
+    # find and install current endevouros-arm-mirrorlist
+    local tmpfile
+    local currentmirrorlist
+    local ARMARCH="aarch64"
+
+    printf "\n${CYAN}Find current endeavouros-mirrorlist...${NC}\n\n"
+    sleep 1
+    curl https://github.com/endeavouros-team/repo/tree/master/endeavouros/$ARMARCH | grep "endeavouros-mirrorlist" | sed s'/^.*endeavouros-mirrorlist/endeavouros-mirrorlist/'g | sed s'/pkg.tar.zst.*/pkg.tar.zst/'g | tail -1 > mirrors
+
+    tmpfile="mirrors"
+    read -d $'\x04' currentmirrorlist < "$tmpfile"
+
+    printf "\n${CYAN}Downloading endeavouros-mirrorlist...${NC}"
+    wget https://github.com/endeavouros-team/repo/raw/master/endeavouros/$ARMARCH/$currentmirrorlist 2>> /root/enosARM.log
+
+    printf "\n${CYAN}Installing endeavouros-mirrorlist...${NC}\n"
+    pacman -U --noconfirm $currentmirrorlist
+
+    printf "\n[endeavouros]\nSigLevel = PackageRequired\nInclude = /etc/pacman.d/endeavouros-mirrorlist\n\n" >> /etc/pacman.conf
+
+    rm mirrors
+}  # end of function _find_mirrorlist
+
+_find_keyring() {
+    local tmpfile
+    local currentkeyring
+    local ARMARCH="aarch64"
+
+    printf "\n${CYAN}Find current endeavouros-keyring...${NC}\n\n"
+    sleep 1
+    curl https://github.com/endeavouros-team/repo/tree/master/endeavouros/$ARMARCH | grep endeavouros-keyring | sed s'/^.*endeavouros-keyring/endeavouros-keyring/'g | sed s'/pkg.tar.zst.*/pkg.tar.zst/'g | tail -1 > keys
+
+    tmpfile="keys"
+    read -d $'\04' currentkeyring < "$tmpfile"
+
+    printf "\n${CYAN}Downloading endeavouros-keyring...${NC}"
+    wget https://github.com/endeavouros-team/repo/raw/master/endeavouros/$ARMARCH/$currentkeyring 2>> /root/enosARM.log
+
+    printf "\n${CYAN}Installing endeavouros-keyring...${NC}\n"
+    pacman -U --noconfirm $currentkeyring 
+
+    rm keys
+}   # End of function _find_keyring
+
+Main () {
+    sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 5/g' /etc/pacman.conf
+    sed -i "s|#Color|Color\nILoveCandy|g" /etc/pacman.conf
+    sed -i "s|#VerbosePkgLists|VerbosePkgLists\nDisableDownloadTimeout|g" /etc/pacman.conf
+    haveged -w 1024
+    pacman-key --init
+    pkill haveged
+    pacman-key --populate archlinuxarm
+    pacman -Sy --noconfirm wget
+    _find_mirrorlist
+    _find_keyring
+    pacman-key --populate endeavouros
+}
+
+Main "$@"
