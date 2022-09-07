@@ -33,7 +33,7 @@ https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_config_ce
 
 
 **Changelog:**
-* up from 7. September 2022 main is following config format for calamares 3.3 relases.
+
 * New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process.
 * Review and rewrite of custom modules (pacstrap e.t.c) for better integration into calamares and easier maintainment by dalto manuel and joekamprad (early 2022) 
 * Build script cleanup and minimizations done by keybreak and joekamprad (April 2022)
