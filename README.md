@@ -3,7 +3,7 @@
 **EndeavourOS specific calamares extra-modules, installer-scripts, branding and module configuration files**
 
 
-[![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
+[![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)](https://github.com/endeavouros-team)
 
 <img src="https://raw.githubusercontent.com/endeavouros-team/screenshots/master/Artemis/Artemis-Calamares.png" alt="calamares-welcome" width="600"/>
 
