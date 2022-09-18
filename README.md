@@ -9,6 +9,7 @@
 
 ...
 
+* Main branch is now prepared for Calamares 3.3 changes in (18 sept. 2022 joekamprad)
 
 Calamares startup is handled by welcome (application) on EndeavourOS:
 
