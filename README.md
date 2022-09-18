@@ -9,8 +9,6 @@
 
 ...
 
-* Main branch is now prepared for Calamares 3.3 changes in (18 sept. 2022 joekamprad)
-
 Calamares startup is handled by welcome (application) on EndeavourOS:
 
 https://github.com/endeavouros-team/PKGBUILDS/tree/master/welcome
@@ -34,6 +32,8 @@ https://github.com/endeavouros-team/PKGBUILDS/tree/master/calamares_config_ce
 
 
 **Changelog:**
+
+* Main branch is now prepared for Calamares 3.3 changes in (18 sept. 2022 joekamprad)
 
 * New merged repository structure (october 2021) by joekamprad this repo now holds all needed files for the install process.
 * Review and rewrite of custom modules (pacstrap e.t.c) for better integration into calamares and easier maintainment by dalto manuel and joekamprad (early 2022) 
