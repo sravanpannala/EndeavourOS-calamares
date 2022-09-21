@@ -766,6 +766,8 @@ def install_refind(efi_directory):
         for line in filedata:
             if line.startswith('"Boot with standard options"'):
                 line = f'"Boot with standard options"    "{kernel_params}"'
+            elif line.startswith('"Boot to single-user mode"'):
+                line = f'"Boot to single-user mode"    "{kernel_params}" single'
             refind_file.write(line + "\n")
 
 
