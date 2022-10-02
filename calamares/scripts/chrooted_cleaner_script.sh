@@ -417,11 +417,6 @@ _run_if_exists_or_complain() {
     fi
 }
 
-_fix_grub_stuff() {
-    _run_if_exists_or_complain eos-hooks-runner
-    _run_if_exists_or_complain eos-grub-fix-initrd-generation
-}
-
 _RunUserCommands() {
     local usercmdfile=/tmp/user_commands.bash
     if [ -r $usercmdfile ] ; then
@@ -482,10 +477,6 @@ _clean_up(){
 
     # run possible user-given commands
     _RunUserCommands
-
-    # Fix various grub stuff.
-    # disabled for good will get removed completely in the future
-    #_fix_grub_stuff
 }
 
 _desktop_i3(){
@@ -616,7 +607,8 @@ Main() {
     _run_hotfix_end
 
     rm -rf /etc/calamares /opt/extra-drivers
-    grub-mkconfig -o /boot/grub/grub.cfg
+    [[ -f "/boot/grub/grub.cfg" ]] && grub-mkconfig -o /boot/grub/grub.cfg
+
     _c_c_s_msg info "$filename done."
 }
 

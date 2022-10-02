@@ -751,7 +751,11 @@ def efi_partitions(efi_boot_path):
 
 
 def install_refind(efi_directory):
-    installation_root_path = libcalamares.globalstorage.value("rootMountPoint")
+    try:
+        installation_root_path = libcalamares.globalstorage.value("rootMountPoint")
+    except KeyError:
+        libcalamares.utils.warning('Global storage value "rootMountPoint" missing')
+
     install_efi_directory = installation_root_path + efi_directory
     uuid = get_uuid()
     kernel_params = " ".join(get_kernel_params(uuid))
@@ -782,19 +786,29 @@ def prepare_bootloader(fw_type):
     """
 
     # Get the boot loader selection from global storage if it is set in the config file
-    if libcalamares.job.configuration.get("efiBootLoaderVar", None) is not None:
-        efi_boot_loader = libcalamares.globalstorage.value(libcalamares.job.configuration["efiBootLoaderVar"], None)
-        if efi_boot_loader is None:
+    try:
+        gs_name = libcalamares.job.configuration["efiBootLoaderVar"]
+        if libcalamares.globalstorage.contains(gs_name):
+            efi_boot_loader = libcalamares.globalstorage.value(gs_name)
+        else:
             libcalamares.utils.warning(
-                f"Specified global storage value '{efi_boot_loader}' not found in global storage")
+                f"Specified global storage value not found in global storage")
             return None
-    else:
+    except KeyError:
         # If the conf value for using global storage is not set, use the setting from the config file.
-        efi_boot_loader = libcalamares.job.configuration["efiBootLoader"]
+        try:
+            efi_boot_loader = libcalamares.job.configuration["efiBootLoader"]
+        except KeyError:
+            if fw_type == "efi":
+                libcalamares.utils.warning("Configuration missing both efiBootLoader and efiBootLoaderVar on an EFI "
+                                           "system, bootloader not installed")
+                return
+            else:
+                pass
 
     # If the user has selected not to install bootloader, bail out here
     if efi_boot_loader.casefold() == "none":
-        libcalamares.utils.warning("Skipping bootloader installation since no bootloader was selected")
+        libcalamares.utils.debug("Skipping bootloader installation since no bootloader was selected")
         return None
 
     efi_directory = libcalamares.globalstorage.value("efiSystemPartition")

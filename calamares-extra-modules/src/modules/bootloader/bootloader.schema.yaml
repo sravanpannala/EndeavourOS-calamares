@@ -6,6 +6,7 @@ $id: https://calamares.io/schemas/bootloader
 additionalProperties: false
 type: object
 properties:
+    efiBootLoaderVar: { type: string }
     efiBootLoader: { type: string }
     kernelSearchPath:  { type: string }
     kernelName:  { type: string }
@@ -21,12 +22,3 @@ properties:
 
     efiBootloaderId:  { type: string }
     installEFIFallback: { type: boolean }
-
-required:
-    - efiBootLoader
-    - kernelSearchPath
-    - kernelName
-    - grubInstall
-    - grubMkconfig
-    - grubCfg
-    - grubProbe
