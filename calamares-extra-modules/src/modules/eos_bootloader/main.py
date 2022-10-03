@@ -46,20 +46,20 @@ def run_dracut():
                 # run dracut
                 pkgbase_location = os.path.join(root, file)
                 with open(pkgbase_location, 'r') as pkgbase_file:
-                    kernel_suffix = pkgbase_file.read().rstrip().removeprefix("linux")
+                    kernel_suffix = pkgbase_file.read().rstrip()
                 try:
                     libcalamares.utils.target_env_process_output(["dracut", "--force", "--hostonly", "--no-hostonly"
                                                                                                      "-cmdline",
-                                                                  f"/boot/initramfs{kernel_suffix}.img", kernel_version])
+                                                                  f"/boot/initramfs-{kernel_suffix}.img", kernel_version])
                     libcalamares.utils.target_env_process_output(["dracut", "--force", "--no-hostonly",
-                                                                  f"/boot/initramfs{kernel_suffix}-fallback.img",
+                                                                  f"/boot/initramfs-{kernel_suffix}-fallback.img",
                                                                   kernel_version])
                 except subprocess.CalledProcessError as cpe:
                     libcalamares.utils.warning(f"dracut failed with error: {cpe.stderr}")
-                
-                kernel_name = f"vmlinuz{kernel_suffix}"
+
+                kernel_name = f"vmlinuz-{kernel_suffix}"
                 # copy kernel to boot
-                shutil.copy2(os.path.join(root, kernel_name), os.path.join(installation_root_path, "boot", kernel_name))
+                shutil.copy2(os.path.join(root, "vmlinuz"), os.path.join(installation_root_path, "boot", kernel_name))
 
 
 def run():
