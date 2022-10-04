@@ -157,6 +157,16 @@ DracutLuksCfgJob::exec()
             outStream << QString( CONFIG_FILE_SWAPLINE ).arg( swapOuterUuid ).toLatin1();
         }
         cDebug() << "[DRACUTLUKSCFG]: Wrote config to" << realConfigFilePath;
+
+        if( !hasUnencryptedSeparateBoot() && usesGrub() ) {
+            QFile file("/etc/dracut.conf.d/lukskeyfile.conf");
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                return Calamares::JobResult::error( tr( "Failed to write dracut config for lukskeyfile" ) );
+            }
+
+            QTextStream out(&file);
+            out << "install_items+=/crypto_keyfile.bin" << Qt::endl;
+        }
     }
     else
     {
