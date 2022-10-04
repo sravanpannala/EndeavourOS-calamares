@@ -444,6 +444,7 @@ PartitionViewStep::onActivate()
     QString efiLocation;
     if( Calamares::JobQueue::instance()->globalStorage()->contains("packagechooser_packagechooserq")) {
         QString bootLoader = Calamares::JobQueue::instance()->globalStorage()->value("packagechooser_packagechooserq").toString();
+        cDebug() << "The bootloader is " << bootLoader;
         if( bootLoader.toLower() == "grub") {
             efiLocation = "/boot/efi";
         } else if( bootLoader.toLower() == "refind" ) {
@@ -451,6 +452,7 @@ PartitionViewStep::onActivate()
         } else {
             efiLocation = "/efi";
         }
+        cDebug() << "The efi location is " << efiLocation;
         Calamares::JobQueue::instance()->globalStorage()->insert( "efiSystemPartition", efiLocation);
     }
 
