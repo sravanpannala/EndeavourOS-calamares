@@ -248,7 +248,7 @@ import QtQuick.Layouts 1.3
                         }
                         else {
                             print("no bootloader")
-                            config.packageChoice = "no_bootloader"
+                            config.packageChoice = "none"
                         }
                     }
                 }
