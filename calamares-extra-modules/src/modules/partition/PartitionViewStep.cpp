@@ -17,6 +17,7 @@
 #include "core/BootLoaderModel.h"
 #include "core/DeviceModel.h"
 #include "core/PartitionCoreModule.h"
+#include "core/PartitionInfo.h"
 #include "gui/ChoicePage.h"
 #include "gui/PartitionBarsView.h"
 #include "gui/PartitionLabelsView.h"
@@ -454,6 +455,36 @@ PartitionViewStep::onActivate()
         }
         cDebug() << "The efi location is " << efiLocation;
         Calamares::JobQueue::instance()->globalStorage()->insert( "efiSystemPartition", efiLocation);
+    }
+
+    if ( PartUtils::isEfiSystem() )
+    {
+        // Alter GS based on prior module
+        QString efiLocation;
+        if( Calamares::JobQueue::instance()->globalStorage()->contains("packagechooser_packagechooserq")) {
+            QString bootLoader = Calamares::JobQueue::instance()->globalStorage()->value("packagechooser_packagechooserq").toString();
+            cDebug() << "The bootloader is " << bootLoader;
+            if( bootLoader.toLower() == "grub") {
+                efiLocation = "/boot/efi";
+            } else if( bootLoader.toLower() == "refind" ) {
+                efiLocation = "/boot";
+            } else {
+                efiLocation = "/efi";
+            }
+            cDebug() << "The efi location is " << efiLocation;
+            Calamares::JobQueue::instance()->globalStorage()->insert( "efiSystemPartition", efiLocation);
+        }
+
+        // This may not be our first trip so cleanup anything old
+        QList< Partition* > efiSystemPartitions = m_core->efiSystemPartitions();
+        if ( efiSystemPartitions.count() == 1 )
+        {
+            PartitionInfo::setMountPoint( efiSystemPartitions.first(), efiLocation );
+        }
+        else if ( efiSystemPartitions.count() > 1 )
+        {
+            PartitionInfo::setMountPoint( efiSystemPartitions.at( m_choicePage->efiIndex() ), efiLocation );
+        }
     }
 
     m_config->fillGSSecondaryConfiguration();

@@ -662,6 +662,17 @@ ChoicePage::onHomeCheckBoxStateChanged()
 }
 
 
+int
+ChoicePage::efiIndex()
+{
+    if( !m_efiComboBox )
+    {
+        return 0;
+    }
+
+    return m_efiComboBox->currentIndex();
+}
+
 void
 ChoicePage::onLeave()
 {
