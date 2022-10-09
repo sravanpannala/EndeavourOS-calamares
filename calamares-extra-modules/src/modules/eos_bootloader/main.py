@@ -30,6 +30,31 @@ def pretty_status_message():
         return custom_status_message
 
 
+def get_local_packages(packages):
+    try:
+        package_location = libcalamares.job.configuration["packageLocation"]
+    except KeyError:
+        return "Configuration Error", "No package location defined in config"
+
+    if not os.path.exists(package_location):
+        return ("Package location missing",
+                f"{package_location} is not currently available")
+
+    try:
+        installation_root_path = libcalamares.globalstorage.value("rootMountPoint")
+    except KeyError:
+        libcalamares.utils.warning('Global storage value "rootMountPoint" missing')
+
+    package_files = []
+    for root, dirs, files in os.walk(os.path.join(installation_root_path, package_location.lstrip('/'))):
+        for file in files:
+            for package in packages:
+                if file.startswith(package + "-") and file.endswith(".zst"):
+                    package_files.append(os.path.join(package_location, file))
+
+    return package_files
+
+
 def run_dracut():
     kernel_search_path = "/usr/lib/modules"
 
@@ -48,9 +73,10 @@ def run_dracut():
                 with open(pkgbase_location, 'r') as pkgbase_file:
                     kernel_suffix = pkgbase_file.read().rstrip()
                 try:
-                    libcalamares.utils.target_env_process_output(["dracut", "--force", "--hostonly", "--no-hostonly"
-                                                                                                     "-cmdline",
-                                                                  f"/boot/initramfs-{kernel_suffix}.img", kernel_version])
+                    libcalamares.utils.target_env_process_output(["dracut", "--force", "--hostonly",
+                                                                  "--no-hostonly-cmdline",
+                                                                  f"/boot/initramfs-{kernel_suffix}.img",
+                                                                  kernel_version])
                     libcalamares.utils.target_env_process_output(["dracut", "--force", "--no-hostonly",
                                                                   f"/boot/initramfs-{kernel_suffix}-fallback.img",
                                                                   kernel_version])
@@ -72,13 +98,10 @@ def run():
         return "Missing global storage value", "gsname not found in configuration file"
 
     try:
-        package_location = libcalamares.job.configuration["packageLocation"]
+        offline = libcalamares.job.configuration["offline"]
     except KeyError:
-        return "Configuration Error", "No package location defined in config"
-
-    if not os.path.exists(package_location):
-        return ("Package location missing",
-                f"{package_location} is not currently available")
+        offline = False
+        pass
 
     bootloaders = libcalamares.job.configuration.get("bootloader", [])
 
@@ -96,11 +119,26 @@ def run():
         except KeyError:
             return f"Configuration error", f"Missing key 'name' in configuration"
 
-    if packages is not None:
-        try:
-            libcalamares.utils.target_env_process_output(["pacman", "--noconfirm", "-S"] + packages)
-        except subprocess.CalledProcessError as cpe:
-            return f"Failed to install packages for {bootloader_name}", f"The install failed with error: {cpe.stderr}"
+    # remove mkinitcpio
+    try:
+        libcalamares.utils.target_env_process_output(["pacman", "--noconfirm", "-Rc", "mkinitcpio"])
+    except subprocess.CalledProcessError:
+        pass
+
+    # install packages
+    if offline:
+        package_files = get_local_packages(packages)
+        if package_files is not None:
+            try:
+                libcalamares.utils.target_env_process_output(["pacman", "--noconfirm", "-U"] + package_files)
+            except subprocess.CalledProcessError as cpe:
+                return f"Failed to install packages for {bootloader_name}", f"The install failed with error: {cpe.stderr}"
+    else:
+        if packages is not None:
+            try:
+                libcalamares.utils.target_env_process_output(["pacman", "--noconfirm", "-S"] + packages)
+            except subprocess.CalledProcessError as cpe:
+                return f"Failed to install packages for {bootloader_name}", f"The install failed with error: {cpe.stderr}"
 
     # Run dracut unless we are using systemd-boot since kernel-install handles that
     if bootloader_name.casefold().strip() != "systemd-boot":

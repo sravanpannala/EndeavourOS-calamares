@@ -202,6 +202,10 @@ _clean_offline_packages(){
         arch-install-scripts
         memtest86+
         mkinitcpio-archiso
+        mkinitcpio
+        mkinitcpio-openswap
+        mkinitcpio-nfs-utils
+        mkinitcpio-busybox
         pv
         syslinux
 
@@ -459,6 +463,9 @@ _clean_up(){
     _install_more_firmware
 
     _misc_cleanups
+
+    # remove the packages dir
+    rm -rf /usr/share/packages
 
     # on the target, select file server based on country
     xx=/usr/bin/eos-select-file-server
