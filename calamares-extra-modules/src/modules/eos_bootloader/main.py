@@ -121,7 +121,7 @@ def run():
 
     # remove mkinitcpio
     try:
-        libcalamares.utils.target_env_process_output(["pacman", "--noconfirm", "-Rc", "mkinitcpio"])
+        libcalamares.utils.target_env_process_output(["pacman", "--noconfirm", "-Rcn", "mkinitcpio"])
     except subprocess.CalledProcessError:
         pass
 
