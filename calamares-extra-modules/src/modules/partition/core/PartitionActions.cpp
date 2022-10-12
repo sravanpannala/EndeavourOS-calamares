@@ -96,10 +96,12 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
     // empty and a EFI boot partition, while BIOS starts at
     // the 1MiB boundary (usually sector 2048).
     // ARM empty sectors are 16 MiB in size.
-    if ( gs->contains( "arm_install" ) && gs->value( "arm_install").toBool())
+    if ( gs->contains( "arm_install" ) && gs->value( "arm_install" ).toBool() )
     {
         int empty_space_sizeB = 16_MiB;
-    } else {
+    }
+    else
+    {
         int empty_space_sizeB = isEfi ? 2_MiB : 1_MiB;
     }
 

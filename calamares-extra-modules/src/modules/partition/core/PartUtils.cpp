@@ -439,10 +439,6 @@ bool
 isEfiSystem()
 {
     Calamares::GlobalStorage* gs = Calamares::JobQueue::instance()->globalStorage();
-    bool a = gs->contains( "arm_install" );
-    bool b = gs->value( "arm_install" ).toBool();
-    cDebug() << "a: " << a;
-    cDebug() << "b: " << b;
     if ( gs->contains( "arm_install" ) && gs->value( "arm_install" ).toBool() )
     {
         return true;
