@@ -616,6 +616,10 @@ Main() {
     rm -rf /etc/calamares /opt/extra-drivers
     [[ -f "/boot/grub/grub.cfg" ]] && grub-mkconfig -o /boot/grub/grub.cfg
 
+    # show disk and partition info
+    lsblk -f -o+SIZE
+    fdisk -l
+
     _c_c_s_msg info "$filename done."
 }
 
